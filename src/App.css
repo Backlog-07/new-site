@@ -4655,29 +4655,30 @@
 
 @media (max-width: 720px) {
   .world-page {
-    height: 100vh;
+    min-height: auto;
+    height: auto;
   }
 
   .world-contact-sheet {
-    height: 100vh;
+    min-height: auto;
+    height: auto;
   }
 
   .world-contact-sheet__rail {
-    align-items: center;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 12px;
-    padding: 12px 14px 18px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
+    padding: 12px 12px 18px;
+    overflow: visible;
   }
 
   .world-contact-sheet__item {
-    width: min(74vw, 320px) !important;
+    width: calc(50% - 6px) !important;
+    max-width: 180px;
     height: auto !important;
     aspect-ratio: 9 / 16 !important;
     flex: 0 0 auto;
-    scroll-snap-align: center;
   }
 
   .world-contact-sheet__index {
