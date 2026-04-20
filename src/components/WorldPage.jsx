@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { useEffect, useMemo, useState } from 'react'
 
 function hashString(input) {
@@ -142,6 +143,19 @@ export function WorldPage({ slides = [], loading = false, compact = false }) {
     }
   }, [activeItem, lightboxClosing])
 
+  useEffect(() => {
+    if (!activeItem) {
+      return undefined
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [activeItem])
+
   const flattenedItems = useMemo(() => flattenWorldItems(slides), [slides])
   const contactItems = useMemo(() => buildPlacements(flattenedItems), [flattenedItems])
   const loadingItems = useMemo(
@@ -191,37 +205,40 @@ export function WorldPage({ slides = [], loading = false, compact = false }) {
         </div>
       </div>
 
-      {activeItem ? (
-        <div
-          className={`world-lightbox${lightboxClosing ? ' world-lightbox--closing' : ' world-lightbox--open'}`}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Preview ${activeItem.alt || activeItem.slide.title}`}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              requestCloseLightbox()
-            }
-          }}
-        >
-          <div className="world-lightbox__stage">
-            <button
-              type="button"
-              className="world-lightbox__close"
+      {activeItem
+        ? createPortal(
+            <div
+              className={`world-lightbox${lightboxClosing ? ' world-lightbox--closing' : ' world-lightbox--open'}`}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Preview ${activeItem.alt || activeItem.slide.title}`}
               onClick={(event) => {
-                event.stopPropagation()
-                requestCloseLightbox()
+                if (event.target === event.currentTarget) {
+                  requestCloseLightbox()
+                }
               }}
-              aria-label="Close image"
             >
-              <span className="world-lightbox__close-line world-lightbox__close-line--one" aria-hidden="true" />
-              <span className="world-lightbox__close-line world-lightbox__close-line--two" aria-hidden="true" />
-            </button>
-            <div className="world-lightbox__frame">
-              <img src={activeItem.src} alt={activeItem.alt || activeItem.slide.title} />
-            </div>
-          </div>
-        </div>
-      ) : null}
+              <div className="world-lightbox__stage">
+                <button
+                  type="button"
+                  className="world-lightbox__close"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    requestCloseLightbox()
+                  }}
+                  aria-label="Close image"
+                >
+                  <span className="world-lightbox__close-line world-lightbox__close-line--one" aria-hidden="true" />
+                  <span className="world-lightbox__close-line world-lightbox__close-line--two" aria-hidden="true" />
+                </button>
+                <div className="world-lightbox__frame">
+                  <img src={activeItem.src} alt={activeItem.alt || activeItem.slide.title} />
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </section>
   )
 }

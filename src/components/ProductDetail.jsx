@@ -31,7 +31,7 @@ export function ProductDetail({
   const firstAvailableSize = product.sizes.find((size) => size.available)?.label ?? ''
   const [selectedSize, setSelectedSize] = useState(firstAvailableSize)
   const [activeInfo, setActiveInfo] = useState('details')
-  const [mobileAccordionOpen, setMobileAccordionOpen] = useState('details')
+  const [mobileAccordionOpen, setMobileAccordionOpen] = useState('')
   const [mobileImageIndex, setMobileImageIndex] = useState(0)
   const swipeStartX = useRef(0)
   const swipeStartY = useRef(0)
@@ -255,7 +255,7 @@ export function ProductDetail({
                     >
                       <span>{section.label}</span>
                       <span className="detail-mobile-accordion__icon" aria-hidden="true">
-                        {isOpen ? '−' : '+'}
+                        {isOpen ? '-' : '+'}
                       </span>
                     </button>
                     <div className="detail-mobile-accordion__panel" aria-hidden={!isOpen}>
