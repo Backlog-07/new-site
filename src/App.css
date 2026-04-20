@@ -6413,14 +6413,28 @@ body {
     border-bottom-color: transparent !important;
   }
 
-  /* Remove product section bottom gap */
+  /* Remove product section bottom gap + center card with breathing room */
   .product-showcase--sketch {
     padding-bottom: 0 !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
   }
 
   .product-showcase-sketch-shell {
     padding-bottom: 0 !important;
     padding-top: 48px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .product-showcase-card--sketch {
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  /* The "white thing" — match card meta bg to page beige */
+  .product-grid-meta--sketch {
+    background: rgba(247, 244, 239, 0.98) !important;
   }
 
   /* ── Minimalist mobile footer ── */
@@ -6451,5 +6465,28 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
+  }
+}
+
+
+
+@media (max-width: 560px) {
+  .stack-section--subscribe {
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  .subscribe-section {
+    padding: 48px 24px 28px !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  .subscribe-section__inner {
+    gap: 28px !important;
+  }
+
+  .subscribe-section__fineprint {
+    margin-top: 12px !important;
   }
 }
