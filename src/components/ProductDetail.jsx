@@ -89,8 +89,10 @@ export function ProductDetail({
         >
           <div className="product-detail-panel-inner">
             <p className="detail-kicker">collections / apparel</p>
-            <h1 className="detail-title">{product.shortName}</h1>
-            <p className="detail-price">{product.price}</p>
+            <div className="detail-heading-row">
+              <h1 className="detail-title">{product.shortName}</h1>
+              <p className="detail-price">{product.price}</p>
+            </div>
             <div className="detail-info-switcher" aria-label="Product information selectors">
               {[
                 { id: 'details', label: 'Details' },
@@ -145,7 +147,7 @@ export function ProductDetail({
                 onClick={() => onAddToCart(selectedSizeEntry).catch(() => {})}
                 disabled={!selectedSizeEntry?.available || !selectedSizeEntry?.merchandiseId || addingToCart}
               >
-                {addingToCart ? 'ADDING...' : 'ADD TO BAG'}
+                {addingToCart ? 'ADDING...' : 'ADD TO CART'}
               </button>
               <button
                 type="button"

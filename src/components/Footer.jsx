@@ -1,5 +1,3 @@
-import productImage from '../assets/BACKLOG (4).png'
-
 const shopLinks = ['Women', 'Divided', 'Men', 'Kids', 'H&M Home', 'Unidays']
 
 const corporateLinks = [
@@ -69,27 +67,19 @@ export function Footer() {
       </div>
 
       <div className="footer-mobile">
-        <div className="footer-mobile__chrome" aria-hidden="true">
-          <span className="footer-mobile__chip">
-            <span className="footer-mobile__chip-plus">+</span>
-            <span>BACKLOG</span>
-          </span>
-          <span className="footer-mobile__bookmark" />
-        </div>
-
-        <p className="footer-mobile__wordmark">Backlog</p>
+        <p className="footer-mobile__wordmark">BACKLOG</p>
 
         <div className="footer-mobile__grid">
           <MobileLinkGroup
-            title="Connect with us"
+            title="Connect"
             links={['Call', 'Text (WhatsApp)', 'Instagram', 'YouTube', 'LinkedIn']}
           />
           <MobileLinkGroup
-            title="We are BACKLOG"
+            title="Brand"
             links={['Our story', 'Walk-in Stores', 'Collaborations', 'Careers', 'Media', 'Blogs']}
           />
           <MobileLinkGroup
-            title="Order Support"
+            title="Support"
             className="footer-mobile__col--wide"
             links={[
               'Make a return/Exchange',
@@ -100,10 +90,6 @@ export function Footer() {
               'Terms',
             ]}
           />
-        </div>
-
-        <div className="footer-mobile__visual" aria-hidden="true">
-          <img src={productImage} alt="" className="footer-mobile__visual-image" />
         </div>
 
         <p className="footer-mobile__copy">
