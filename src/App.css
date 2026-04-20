@@ -3348,9 +3348,7 @@
   justify-content: center;
   align-items: center;
   padding: clamp(40px, 8vw, 112px) clamp(16px, 4vw, 56px);
-  background:
-    radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.9), transparent 26%),
-    linear-gradient(180deg, #f7f8f9 0%, #eef0f3 100%);
+  background: var(--site-bg, #f7f4ef);
 }
 
 .subscribe-section__inner {
@@ -3507,21 +3505,37 @@
 
 @media (max-width: 560px) {
   .subscribe-section {
-    padding: 48px 16px 24px;
+    padding: 56px 24px 40px;
     min-height: auto;
+    background: var(--site-bg, #f7f4ef);
+    align-items: flex-start;
   }
 
   .subscribe-section__inner {
-    gap: 32px;
+    gap: 36px;
+    width: 100%;
+  }
+
+  .subscribe-section__copy {
+    gap: 8px;
+    max-width: 100%;
   }
 
   .subscribe-section__copy h2 {
-    font-size: clamp(2rem, 10vw, 2.4rem);
+    font-size: clamp(2.2rem, 10vw, 2.8rem);
   }
 
   .subscribe-section__features {
-    margin-top: 18px;
-    gap: 10px 14px;
+    margin-top: 14px;
+    gap: 8px 12px;
+  }
+
+  .subscribe-section__panel {
+    width: 100%;
+  }
+
+  .subscribe-section__fineprint {
+    margin-top: 16px;
   }
 }
 
@@ -6391,11 +6405,51 @@ body {
 .footer-panel { background: transparent !important; box-shadow: none !important; border: none !important; }
 
 @media (max-width: 767px) {
+  /* Unify header + product section into one seamless background */
+  .site-header,
+  .header-shell,
+  .header-primary {
+    background: var(--site-bg, #f7f4ef) !important;
+    border-bottom-color: transparent !important;
+  }
+
+  /* Remove product section bottom gap */
   .product-showcase--sketch {
     padding-bottom: 0 !important;
   }
 
   .product-showcase-sketch-shell {
     padding-bottom: 0 !important;
+    padding-top: 48px;
+  }
+
+  /* ── Minimalist mobile footer ── */
+  .site-footer {
+    padding: 40px 24px 36px !important;
+    background: var(--site-bg, #f7f4ef) !important;
+  }
+
+  /* Hide verbose link columns and member block */
+  .footer-column,
+  .footer-member {
+    display: none !important;
+  }
+
+  /* Hide the multi-column panel entirely */
+  .footer-panel {
+    display: none !important;
+  }
+
+  /* Show only the tagline note, centered and clean */
+  .footer-note {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(17, 16, 16, 0.42);
+    text-align: center;
+    margin: 0;
+    padding: 0;
   }
 }
