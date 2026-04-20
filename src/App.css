@@ -6391,7 +6391,11 @@ body {
 .footer-panel { background: transparent !important; box-shadow: none !important; border: none !important; }
 
 @media (max-width: 767px) {
-  .product-showcase, .product-showcase--sketch, .customer-reviews-section, .service-strip, .about-page, .world-page, .product-detail-page, .subscribe-section, .site-footer {
-    background: transparent !important;
+  .product-showcase--sketch {
+    padding-bottom: 0 !important;
+  }
+
+  .product-showcase-sketch-shell {
+    padding-bottom: 0 !important;
   }
 }
