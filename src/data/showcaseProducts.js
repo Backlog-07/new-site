@@ -14,6 +14,8 @@ export const localShowcaseProducts = [
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
     shortName: 'LAZY EYE LINEN SHIRT IN BROWN',
     description: 'A relaxed lightweight shirt with a crisp collar and soft drape.',
+    details: 'A relaxed lightweight shirt with a crisp collar and soft drape.',
+    careInstructions: DEFAULT_CARE,
     sizes: [
       { label: 'XXS', available: true, merchandiseId: null },
       { label: 'XS', available: false, merchandiseId: null },
@@ -39,6 +41,8 @@ export const localShowcaseProducts = [
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
     shortName: 'LAZY EYE LINEN SHIRT IN WHITE',
     description: 'A relaxed lightweight shirt with a crisp collar and soft drape.',
+    details: 'A relaxed lightweight shirt with a crisp collar and soft drape.',
+    careInstructions: DEFAULT_CARE,
     sizes: [
       { label: 'XXS', available: true, merchandiseId: null },
       { label: 'XS', available: false, merchandiseId: null },
@@ -64,6 +68,8 @@ export const localShowcaseProducts = [
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
     shortName: 'BADLY CUT SHIRT IN WHITE [UNISEX]',
     description: 'An oversized unisex shirt with an intentionally dropped fit.',
+    details: 'An oversized unisex shirt with an intentionally dropped fit.',
+    careInstructions: DEFAULT_CARE,
     sizes: [
       { label: 'XXS', available: true, merchandiseId: null },
       { label: 'XS', available: false, merchandiseId: null },
@@ -89,6 +95,8 @@ export const localShowcaseProducts = [
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
     shortName: 'DANCING MAN SHACKET IN BLUE',
     description: 'A cropped workwear layer with a structured outer shell.',
+    details: 'A cropped workwear layer with a structured outer shell.',
+    careInstructions: DEFAULT_CARE,
     sizes: [
       { label: 'XXS', available: true, merchandiseId: null },
       { label: 'XS', available: false, merchandiseId: null },
@@ -122,6 +130,18 @@ const PRODUCTS_QUERY = `
             url
             altText
           }
+        }
+        metafields(identifiers: [
+          { namespace: "custom", key: "details" }
+          { namespace: "custom", key: "care_instructions" }
+          { namespace: "custom", key: "careInstructions" }
+          { namespace: "custom", key: "washcare" }
+          { namespace: "custom", key: "wash_care" }
+          { namespace: "custom", key: "product_details" }
+        ]) {
+          key
+          type
+          value
         }
         variants(first: 100) {
           nodes {
@@ -163,6 +183,11 @@ const PRODUCTS_QUERY = `
 
 const DEFAULT_SWATCHES = ['#171717', '#ded3c1', '#b31d28']
 const DEFAULT_NOTES = ['product details +', 'model wears +', 'sizing chart +']
+const DEFAULT_CARE = [
+  'Cold wash inside out with like colors.',
+  'Use a mild detergent and avoid bleach.',
+  'Lay flat or hang to dry for best shape retention.',
+]
 const DEFAULT_SIZES = [
   { label: 'XXS', available: true, merchandiseId: null },
   { label: 'XS', available: false, merchandiseId: null },
@@ -186,6 +211,63 @@ function optionValues(product, optionName) {
     (entry) => entry.name.toLowerCase() === optionName.toLowerCase(),
   )
   return option?.values?.length ? option.values : []
+}
+
+function metafieldValue(product, keys = []) {
+  const metafields = product.metafields ?? []
+  const normalizedKeys = keys.map((key) => key.toLowerCase())
+  const match = metafields.find((field) => normalizedKeys.includes((field.key || '').toLowerCase()))
+  return match ?? null
+}
+
+function richTextToPlainText(value) {
+  if (!value) {
+    return ''
+  }
+
+  try {
+    const parsed = JSON.parse(value)
+    const lines = []
+
+    function walk(node) {
+      if (!node) {
+        return
+      }
+
+      if (Array.isArray(node)) {
+        node.forEach(walk)
+        return
+      }
+
+      if (typeof node === 'string') {
+        const trimmed = node.trim()
+        if (trimmed) {
+          lines.push(trimmed)
+        }
+        return
+      }
+
+      if (typeof node.text === 'string' && node.text.trim()) {
+        lines.push(node.text.trim())
+      }
+
+      if (node.children) {
+        walk(node.children)
+      }
+    }
+
+    walk(parsed)
+    return lines.join(' ').replace(/\s+/g, ' ').trim()
+  } catch {
+    return String(value).trim()
+  }
+}
+
+function splitIntoLines(value) {
+  return String(value || '')
+    .split(/\r?\n+/)
+    .map((line) => line.replace(/^[•\-\u2022]+\s*/, '').trim())
+    .filter(Boolean)
 }
 
 function sizeAvailabilityMap(product) {
@@ -226,6 +308,17 @@ function mapShopifyProduct(product, index) {
         product.priceRange.minVariantPrice.currencyCode,
       )
     : 'INR 0.00'
+  const detailsMetafield = metafieldValue(product, ['details', 'product_details'])
+  const careMetafield = metafieldValue(product, [
+    'care_instructions',
+    'careInstructions',
+    'washcare',
+    'wash_care',
+  ])
+  const productDescription = product.description?.trim() || 'A minimal garment selected from the Shopify catalog.'
+  const detailsText = richTextToPlainText(detailsMetafield?.value) || productDescription
+  const careText = richTextToPlainText(careMetafield?.value)
+  const careInstructions = splitIntoLines(careText).length ? splitIntoLines(careText) : DEFAULT_CARE
 
   return {
     id: product.id,
@@ -238,7 +331,9 @@ function mapShopifyProduct(product, index) {
     breadcrumb: `entire studios / ${product.handle || title.toLowerCase()}`,
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
     shortName: title.toUpperCase(),
-    description: product.description || 'A minimal garment selected from the Shopify catalog.',
+    description: productDescription,
+    details: detailsText,
+    careInstructions,
     sizes: optionValues(product, 'Size').length ? sizeAvailabilityMap(product) : DEFAULT_SIZES,
     colors: optionValues(product, 'Color').length ? optionValues(product, 'Color') : DEFAULT_SWATCHES,
     detailNotes: DEFAULT_NOTES,

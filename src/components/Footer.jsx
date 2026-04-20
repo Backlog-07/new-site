@@ -83,17 +83,10 @@ export function Footer({ onAboutOpen }) {
       </div>
 
       <div className="footer-mobile">
-        <p className="footer-mobile__wordmark">BACKLOG</p>
-
         <div className="footer-mobile__grid">
           <MobileLinkGroup
-            title="About Us"
-            links={['About Us', 'Careers', 'Sustainability', 'Press']}
-            onAboutOpen={onAboutOpen}
-          />
-          <MobileLinkGroup
             title="Support"
-            className="footer-mobile__col--wide"
+            className="footer-mobile__col--wide footer-mobile__col--solo"
             links={[
               'Make a return/Exchange',
               'Refund/Exchange policy',

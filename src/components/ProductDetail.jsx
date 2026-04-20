@@ -46,6 +46,18 @@ export function ProductDetail({
   const heroImage = imageUrls[0]
   const scrollImages = imageUrls.slice(1)
   const galleryImages = imageUrls
+  const productDescription =
+    product.description?.trim() || 'A minimal garment selected from the Shopify catalog.'
+  const productDetails =
+    product.details?.trim() || productDescription
+  const careInstructions =
+    Array.isArray(product.careInstructions) && product.careInstructions.length > 0
+      ? product.careInstructions
+      : [
+          'Cold wash inside out with like colors.',
+          'Use a mild detergent and avoid bleach.',
+          'Lay flat or hang to dry for best shape retention.',
+        ]
 
   useEffect(() => {
     setMobileImageIndex(0)
@@ -84,12 +96,8 @@ export function ProductDetail({
   }
 
   const infoSections = {
-    details: `${product.brandLine} is presented in a clean, minimal silhouette with a focus on texture, proportion, and drape.`,
-    washcare: [
-      'Cold wash inside out with like colors.',
-      'Use a mild detergent and avoid bleach.',
-      'Lay flat or hang to dry for best shape retention.',
-    ],
+    details: productDetails,
+    washcare: careInstructions,
   }
 
   return (
