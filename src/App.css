@@ -4662,12 +4662,26 @@
     height: 100vh;
   }
 
+  .world-contact-sheet {
+    height: 100vh;
+  }
+
   .world-contact-sheet__rail {
-    padding-top: 12px;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px 18px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
   }
 
   .world-contact-sheet__item {
-    min-width: 46vw;
+    width: min(74vw, 320px) !important;
+    height: auto !important;
+    aspect-ratio: 9 / 16 !important;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
   }
 
   .world-contact-sheet__index {
@@ -4675,6 +4689,15 @@
     left: 4px;
     font-size: 0.46rem;
     color: rgba(17, 16, 16, 0.88);
+  }
+
+  .world-contact-sheet__item img {
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .world-contact-sheet__item--cutout img {
+    object-fit: contain;
   }
 }
 
@@ -5791,6 +5814,7 @@
 
 @media (max-width: 720px) {
   .product-detail-page--editorial {
+    min-height: auto;
     background:
       radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.72), transparent 18%),
       linear-gradient(180deg, #f7f5f1 0%, #efede8 100%);
@@ -5799,6 +5823,7 @@
   .product-detail-layout--editorial {
     display: flex;
     flex-direction: column;
+    min-height: auto;
   }
 
   .product-detail-media {
@@ -5828,6 +5853,10 @@
     width: 100%;
     aspect-ratio: 0.86 / 1;
     border-bottom: 1px solid rgba(17, 16, 16, 0.08);
+    transition:
+      transform 260ms var(--motion-ease-premium, ease),
+      opacity 260ms var(--motion-ease-premium, ease);
+    will-change: transform, opacity;
   }
 
   .product-detail-mobile-carousel__slide img {
@@ -5836,6 +5865,10 @@
     height: 100%;
     object-fit: contain;
     object-position: center center;
+  }
+
+  .product-detail-mobile-carousel__slide.is-active img {
+    transform: scale(1.015);
   }
 
   .product-detail-gallery-item {
@@ -6681,7 +6714,7 @@ body {
 
   .subscribe-section {
     /* Push the newsletter block a little lower on mobile */
-    padding: 84px 24px 28px !important;
+    padding: 100px 24px 28px !important;
     min-height: auto !important;
     height: auto !important;
   }
@@ -6702,8 +6735,13 @@ body {
 
 @media (max-width: 767px) {
   .site-footer {
-    padding: 34px 16px 28px !important;
+    padding: 22px 16px 16px !important;
     background: var(--site-bg, #f7f4ef) !important;
+  }
+
+  .stack-section--footer .site-footer {
+    height: auto !important;
+    min-height: auto !important;
   }
 
   .footer-panel {
@@ -6717,11 +6755,11 @@ body {
   .footer-mobile {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 14px;
     padding: 0;
     width: 100%;
     max-width: 560px;
-    margin: 8px auto 0;
+    margin: 0 auto;
   }
 
   .footer-mobile__wordmark {
@@ -6739,7 +6777,7 @@ body {
   .footer-mobile__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
     justify-items: center;
     align-items: start;
     text-align: center;
@@ -6810,7 +6848,7 @@ body {
   }
 
   .footer-mobile__copy {
-    margin: 2px 0 0;
+    margin: 0;
     font-family: var(--mono);
     font-size: 0.62rem;
     letter-spacing: 0.12em;

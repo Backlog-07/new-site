@@ -129,7 +129,13 @@ export function ProductDetail({
             {galleryImages.map((src, index) => (
               <figure
                 key={`${src}-${index}`}
-                className="product-detail-mobile-carousel__slide"
+                className={`product-detail-mobile-carousel__slide${
+                  mobileImageIndex === index ? ' is-active' : ''
+                }`}
+                style={{
+                  transform: mobileImageIndex === index ? 'scale(1)' : 'scale(0.96)',
+                  opacity: mobileImageIndex === index ? 1 : 0.78,
+                }}
               >
                 <img src={src} alt={`${product.title} view ${index + 1}`} />
               </figure>
