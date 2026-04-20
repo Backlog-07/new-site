@@ -6490,3 +6490,140 @@ body {
     margin-top: 12px !important;
   }
 }
+
+/* -- Mobile-only footer -- */
+.footer-mobile {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .footer-note {
+    display: none;
+  }
+
+  .footer-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .footer-mobile__wordmark {
+    margin: 0 0 10px;
+    font-family: var(--display);
+    font-size: clamp(2.4rem, 12vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    color: var(--site-ink, #111010);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .footer-mobile__tagline {
+    margin: 0 0 32px;
+    font-family: var(--ui);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(17, 16, 16, 0.5);
+  }
+
+  .footer-mobile__links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 36px;
+  }
+
+  .footer-mobile__col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-mobile__col-title {
+    margin: 0 0 4px;
+    font-family: var(--ui);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(17, 16, 16, 0.45);
+  }
+
+  .footer-mobile__col a {
+    font-family: var(--ui);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: rgba(17, 16, 16, 0.75);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+
+  .footer-mobile__col a:hover {
+    color: #111010;
+  }
+
+  .footer-mobile__divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(17, 16, 16, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .footer-mobile__copy {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: rgba(17, 16, 16, 0.35);
+    text-transform: uppercase;
+  }
+}
+
+/* Fix newsletter section height + content spread on mobile */
+@media (max-width: 767px) {
+  .stack-section--subscribe {
+    min-height: 100svh !important;
+    height: 100svh !important;
+  }
+
+  .subscribe-section {
+    min-height: 100svh !important;
+    height: 100svh !important;
+    padding: 56px 24px 48px !important;
+    display: flex !important;
+    align-items: stretch !important;
+  }
+
+  .subscribe-section__inner {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    gap: 0 !important;
+    width: 100% !important;
+  }
+
+  .subscribe-section__copy {
+    flex: 0 0 auto;
+  }
+
+  .subscribe-section__panel {
+    flex: 0 0 auto;
+    margin-top: auto;
+  }
+}
+
+/* Push product card up from bottom edge + unify section color */
+@media (max-width: 767px) {
+  .product-showcase--sketch {
+    background: var(--site-bg, #f7f4ef) !important;
+    padding-bottom: 32px !important;
+  }
+
+  .product-showcase-sketch-shell {
+    padding-bottom: 32px !important;
+    justify-content: center;
+  }
+}

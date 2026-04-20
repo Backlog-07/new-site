@@ -37,6 +37,7 @@ function LinkColumn({ title, links }) {
 export function Footer() {
   return (
     <footer className="site-footer" aria-label="Footer">
+      {/* Full desktop panel */}
       <div className="footer-panel">
         <LinkColumn title="Shop" links={shopLinks} />
         <LinkColumn title="Corporate Info" links={corporateLinks} />
@@ -49,6 +50,32 @@ export function Footer() {
             Read more <span aria-hidden="true">→</span>
           </a>
         </section>
+      </div>
+
+      {/* Mobile-only minimal footer */}
+      <div className="footer-mobile">
+        <p className="footer-mobile__wordmark">BACKLOG</p>
+        <p className="footer-mobile__tagline">
+          Everyday wear. Thoughtful details.
+        </p>
+
+        <div className="footer-mobile__links">
+          <div className="footer-mobile__col">
+            <p className="footer-mobile__col-title">Shop</p>
+            <a href="#top">New arrivals</a>
+            <a href="#top">All products</a>
+            <a href="#top">Gift card</a>
+          </div>
+          <div className="footer-mobile__col">
+            <p className="footer-mobile__col-title">Info</p>
+            <a href="#top">About Backlog</a>
+            <a href="#top">Contact</a>
+            <a href="#top">Legal & Privacy</a>
+          </div>
+        </div>
+
+        <div className="footer-mobile__divider" />
+        <p className="footer-mobile__copy">© {new Date().getFullYear()} Backlog. All rights reserved.</p>
       </div>
 
       <p className="footer-note">
