@@ -85,6 +85,11 @@ export function Footer({ onAboutOpen }) {
       <div className="footer-mobile">
         <div className="footer-mobile__grid">
           <MobileLinkGroup
+            title="About Us"
+            links={['About Us', 'Careers', 'Sustainability', 'Press']}
+            onAboutOpen={onAboutOpen}
+          />
+          <MobileLinkGroup
             title="Support"
             className="footer-mobile__col--wide footer-mobile__col--solo"
             links={[

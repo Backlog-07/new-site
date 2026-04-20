@@ -6932,9 +6932,9 @@ body {
   .site-footer {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    min-height: auto !important;
-    padding: 26px 16px 20px !important;
+    justify-content: flex-start;
+    min-height: calc(100svh - 72px) !important;
+    padding: 18px 16px 16px !important;
     background: var(--site-bg, #f7f4ef) !important;
   }
 
@@ -6960,6 +6960,8 @@ body {
     padding: 0;
     width: 100%;
     max-width: 560px;
+    min-height: 100%;
+    flex: 1;
     margin: 0 auto;
     box-sizing: border-box;
   }
@@ -7075,7 +7077,7 @@ body {
   }
 
   .footer-mobile__copy {
-    margin: 0;
+    margin: auto 0 0;
     width: 100%;
     font-family: var(--mono);
     font-size: 0.62rem;
@@ -7083,7 +7085,7 @@ body {
     color: rgba(17, 16, 16, 0.46);
     text-transform: uppercase;
     text-align: center;
-    padding: 8px 0 0;
+    padding: 14px 0 0;
     border-top: 1px solid rgba(17, 16, 16, 0.08);
   }
 }

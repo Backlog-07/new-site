@@ -139,6 +139,7 @@ const PRODUCTS_QUERY = `
           { namespace: "custom", key: "wash_care" }
           { namespace: "custom", key: "product_details" }
         ]) {
+          namespace
           key
           type
           value
@@ -166,15 +167,6 @@ const PRODUCTS_QUERY = `
         options {
           name
           values
-        }
-        variants(first: 100) {
-          nodes {
-            availableForSale
-            selectedOptions {
-              name
-              value
-            }
-          }
         }
       }
     }
@@ -213,10 +205,14 @@ function optionValues(product, optionName) {
   return option?.values?.length ? option.values : []
 }
 
-function metafieldValue(product, keys = []) {
+function metafieldValue(product, keys = [], namespace = 'custom') {
   const metafields = product.metafields ?? []
   const normalizedKeys = keys.map((key) => key.toLowerCase())
-  const match = metafields.find((field) => normalizedKeys.includes((field.key || '').toLowerCase()))
+  const match = metafields.find(
+    (field) =>
+      (field.namespace || '').toLowerCase() === namespace.toLowerCase() &&
+      normalizedKeys.includes((field.key || '').toLowerCase()),
+  )
   return match ?? null
 }
 
