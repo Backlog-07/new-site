@@ -1,5 +1,5 @@
 import './App.css'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Header } from './components/Header.jsx'
 import { Footer } from './components/Footer.jsx'
 import { ProductShowcase } from './components/ProductShowcase.jsx'
@@ -87,6 +87,18 @@ function App() {
         ? `product-${route.productId || 'loading'}`
         : route.page
   const isHomeStack = route.page === 'home'
+
+  useLayoutEffect(() => {
+    if (route.page === 'home') {
+      return
+    }
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'auto',
+    })
+  }, [route.page, route.productId])
 
   useEffect(() => {
     const handlePopState = () => {

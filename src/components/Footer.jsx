@@ -35,11 +35,13 @@ function LinkColumn({ title, links }) {
 }
 
 function MobileLinkGroup({ title, links, className = '', onAboutOpen }) {
+  const visibleLinks = title === 'About Us' ? links.slice(0, 1) : links
+
   return (
     <section className={`footer-mobile__col ${className}`.trim()}>
       <h2 className="footer-mobile__col-title">{title}</h2>
       <ul className="footer-mobile__list">
-        {links.map((link) => {
+        {visibleLinks.map((link) => {
           const isAboutLink = link === 'About Us'
 
           return (

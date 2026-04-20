@@ -41,6 +41,7 @@ export function ProductDetail({
         : [product.image]
   const heroImage = imageUrls[0]
   const scrollImages = imageUrls.slice(1)
+  const galleryImages = imageUrls
 
   const infoSections = {
     details: `${product.brandLine} is presented in a clean, minimal silhouette with a focus on texture, proportion, and drape.`,
@@ -75,6 +76,20 @@ export function ProductDetail({
               </figure>
             )}
           </div>
+        </div>
+
+        <div className="product-detail-mobile-carousel" aria-label={`${product.title} gallery carousel`}>
+          <div className="product-detail-mobile-carousel__track" tabIndex={0}>
+            {galleryImages.map((src, index) => (
+              <figure
+                key={`${src}-${index}`}
+                className="product-detail-mobile-carousel__slide"
+              >
+                <img src={src} alt={`${product.title} view ${index + 1}`} />
+              </figure>
+            ))}
+          </div>
+          <p className="product-detail-mobile-carousel__hint">Swipe for more views</p>
         </div>
 
         <aside
