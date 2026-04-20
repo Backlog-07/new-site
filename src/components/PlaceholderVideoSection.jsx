@@ -10,6 +10,8 @@ export function PlaceholderVideoSection() {
     <section
       className={`placeholder-video-section${shouldShowFallback ? ' is-fallback' : ''}`}
       aria-label="Featured video"
+      data-motion-reveal
+      data-motion-parallax="0.98"
     >
       <div className="placeholder-video-hero">
         {!shouldShowFallback && video?.mediaKind === 'image' ? (
@@ -35,7 +37,20 @@ export function PlaceholderVideoSection() {
         )}
 
         <div className="placeholder-video-overlay">
-          <span className="placeholder-video-aw">{video?.eyebrow || 'AW25'}</span>
+          <span
+            className="placeholder-video-aw"
+            data-motion-reveal
+            data-motion-parallax="0.88"
+          >
+            {video?.eyebrow || 'AW25'}
+          </span>
+          <h1
+            className="placeholder-video-wordmark"
+            data-motion-reveal
+            data-motion-parallax="0.8"
+          >
+            backlog
+          </h1>
         </div>
       </div>
     </section>

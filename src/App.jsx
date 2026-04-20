@@ -13,6 +13,7 @@ import { useShowcaseProducts } from './hooks/useShowcaseProducts.js'
 import { useShopifyCart } from './hooks/useShopifyCart.js'
 import { CartDrawer } from './components/CartDrawer.jsx'
 import { useWorldGallery } from './hooks/useWorldGallery.js'
+import { useCinematicMotion } from './hooks/useCinematicMotion.js'
 
 function getPageFromPathname(pathname) {
   if (pathname === '/world') {
@@ -47,6 +48,12 @@ function App() {
   const [isBuyingNow, setIsBuyingNow] = useState(false)
   const [introProgress, setIntroProgress] = useState(0)
   const [showIntro, setShowIntro] = useState(true)
+  const [introCurtainActive, setIntroCurtainActive] = useState(false)
+  const [displayRoute, setDisplayRoute] = useState(() => ({
+    page: getPageFromPathname(window.location.pathname),
+    productId: getProductIdFromPathname(window.location.pathname),
+  }))
+  const [pageTransitionPhase, setPageTransitionPhase] = useState('entering')
   const [isTouchLayout, setIsTouchLayout] = useState(() =>
     window.matchMedia('(max-width: 1024px)').matches,
   )
@@ -54,6 +61,10 @@ function App() {
     active: false,
     startY: 0,
     startScrollY: 0,
+  })
+  const pageTransitionTimers = useRef({
+    exit: null,
+    enter: null,
   })
   const { products, loading, error } = useShowcaseProducts()
   const {
@@ -75,16 +86,21 @@ function App() {
     updateCartLineQuantity,
   } = useShopifyCart()
   const selectedProduct =
-    route.page === 'product'
-      ? products.find((product) => product.id === route.productId) ?? null
+    displayRoute.page === 'product'
+      ? products.find((product) => product.id === displayRoute.productId) ?? null
       : null
   const pageTransitionKey =
-    route.page === 'home'
+    displayRoute.page === 'home'
       ? 'home'
-      : route.page === 'product'
-        ? `product-${route.productId || 'loading'}`
-        : route.page
-  const isHomeStack = route.page === 'home'
+      : displayRoute.page === 'product'
+        ? `product-${displayRoute.productId || 'loading'}`
+        : displayRoute.page
+  const isHomeStack = displayRoute.page === 'home'
+
+  useCinematicMotion({
+    enabled: !showIntro,
+    scopeKey: `${pageTransitionKey}:${showIntro ? 'intro' : 'ready'}`,
+  })
 
   useLayoutEffect(() => {
     if (route.page === 'home') {
@@ -137,6 +153,39 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (showIntro) {
+      setDisplayRoute(route)
+      return undefined
+    }
+
+    const currentKey = `${displayRoute.page}:${displayRoute.productId}`
+    const nextKey = `${route.page}:${route.productId}`
+
+    if (currentKey === nextKey) {
+      return undefined
+    }
+
+    window.clearTimeout(pageTransitionTimers.current.exit)
+    window.clearTimeout(pageTransitionTimers.current.enter)
+
+    setPageTransitionPhase('exiting')
+
+    pageTransitionTimers.current.exit = window.setTimeout(() => {
+      setDisplayRoute(route)
+      setPageTransitionPhase('entering')
+
+      pageTransitionTimers.current.enter = window.setTimeout(() => {
+        setPageTransitionPhase('idle')
+      }, 720)
+    }, 180)
+
+    return () => {
+      window.clearTimeout(pageTransitionTimers.current.exit)
+      window.clearTimeout(pageTransitionTimers.current.enter)
+    }
+  }, [route.page, route.productId, showIntro, displayRoute.page, displayRoute.productId])
+
+  useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1024px)')
 
     const updateLayout = (event) => {
@@ -174,17 +223,28 @@ function App() {
   useEffect(() => {
     let active = true
     let hideTimer = null
+    let curtainTimer = null
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     const start = window.setInterval(() => {
       setIntroProgress((current) => {
         if (current >= 100) {
           window.clearInterval(start)
           if (hideTimer == null) {
-            hideTimer = window.setTimeout(() => {
-              if (active) {
-                setShowIntro(false)
-              }
-            }, 260)
+            if (reduceMotion) {
+              hideTimer = window.setTimeout(() => {
+                if (active) {
+                  setShowIntro(false)
+                }
+              }, 120)
+            } else {
+              setIntroCurtainActive(true)
+              curtainTimer = window.setTimeout(() => {
+                if (active) {
+                  setShowIntro(false)
+                }
+              }, 1120)
+            }
           }
           return 100
         }
@@ -197,6 +257,7 @@ function App() {
     return () => {
       active = false
       window.clearInterval(start)
+      window.clearTimeout(curtainTimer)
       if (hideTimer != null) {
         window.clearTimeout(hideTimer)
       }
@@ -327,6 +388,15 @@ function App() {
                 />
               </div>
             </div>
+            <div className={`intro-curtain${introCurtainActive ? ' is-active' : ''}`} aria-hidden="true">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <span
+                  key={`curtain-${index}`}
+                  className="intro-curtain__bar"
+                  style={{ '--i': index }}
+                />
+              ))}
+            </div>
           </div>
         </div>
       ) : null}
@@ -338,12 +408,17 @@ function App() {
         onAboutOpen={handleAboutOpen}
       />
       <main className="storefront-main" aria-hidden={showIntro}>
-        <div className="page-transition" key={pageTransitionKey} data-page-transition>
+        <div
+          className={`page-transition page-transition--${pageTransitionPhase}`}
+          key={pageTransitionKey}
+          data-page-transition
+        >
           {isHomeStack ? (
             <div className="stacking-scene" aria-label="Homepage sections">
               <div
                 className="stack-section stack-section--hero"
-                style={{ '--stack-layer': 1 }}
+                style={{ '--stack-layer': 1, '--motion-delay': '0ms' }}
+                data-motion-reveal
                 onTouchStart={handleStackTouchStart}
                 onTouchMove={handleStackTouchMove}
                 onTouchEnd={handleStackTouchEnd}
@@ -353,7 +428,8 @@ function App() {
               </div>
               <div
                 className="stack-section stack-section--products"
-                style={{ '--stack-layer': 2 }}
+                style={{ '--stack-layer': 2, '--motion-delay': '90ms' }}
+                data-motion-reveal
               >
                 <ProductShowcase
                   products={products}
@@ -364,33 +440,36 @@ function App() {
               </div>
               <div
                 className="stack-section stack-section--services"
-                style={{ '--stack-layer': 4 }}
+                style={{ '--stack-layer': 4, '--motion-delay': '160ms' }}
+                data-motion-reveal
               >
                 <ServiceStrip />
               </div>
               <div
                 className="stack-section stack-section--subscribe"
-                style={{ '--stack-layer': 5 }}
+                style={{ '--stack-layer': 5, '--motion-delay': '230ms' }}
+                data-motion-reveal
               >
                 <SubscribeSection />
               </div>
               <div
                 className="stack-section stack-section--footer"
-                style={{ '--stack-layer': 6 }}
+                style={{ '--stack-layer': 6, '--motion-delay': '300ms' }}
+                data-motion-reveal
               >
                 <Footer onAboutOpen={handleAboutOpen} />
               </div>
             </div>
-          ) : route.page === 'world' ? (
+          ) : displayRoute.page === 'world' ? (
             <WorldPage
               slides={worldSlides}
               loading={worldLoading}
               error={worldError}
               contentType={worldContentType}
             />
-          ) : route.page === 'about' ? (
+          ) : displayRoute.page === 'about' ? (
             <AboutPage />
-          ) : route.page === 'product' ? (
+          ) : displayRoute.page === 'product' ? (
             selectedProduct ? (
               <ProductDetail
                 key={selectedProduct.id}

@@ -40,7 +40,7 @@ function CartGlyph() {
 export function ProductShowcase({ products, loading, error, onSelect }) {
   if (loading && products.length === 0) {
     return (
-      <section className="product-showcase product-showcase--loading" aria-label="Featured products">
+      <section className="product-showcase product-showcase--loading" aria-label="Featured products" data-motion-reveal>
         {['variant-a', 'variant-b', 'variant-c', 'variant-d'].map((variant) => (
           <ProductCardSkeleton key={variant} className={variant} />
         ))}
@@ -50,7 +50,7 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
 
   if (products.length === 0) {
     return (
-      <section className="product-showcase product-showcase-empty" aria-label="Featured products">
+      <section className="product-showcase product-showcase-empty" aria-label="Featured products" data-motion-reveal>
         <div className="product-showcase-empty-state">
           <p className="product-showcase-empty-kicker">shopify store</p>
           <h2>No products loaded yet.</h2>
@@ -68,10 +68,10 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
     const product = products[0]
 
     return (
-      <section className="product-showcase product-showcase--sketch" aria-label="Featured products">
+      <section className="product-showcase product-showcase--sketch" aria-label="Featured products" data-motion-reveal>
         <div className="product-showcase-sketch-shell">
           <div className="product-showcase-sketch-label">
-            <p>Products</p>
+            <p data-motion-reveal data-motion-parallax="0.86">Products</p>
           </div>
           <button
             type="button"
@@ -79,7 +79,7 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
             onClick={() => onSelect(product)}
             aria-label={`Open ${product.title}`}
           >
-            <div className="product-image-stage product-image-stage--sketch">
+            <div className="product-image-stage product-image-stage--sketch" data-motion-reveal>
               <img
                 className="product-showcase-image"
                 src={product.image}
@@ -87,7 +87,7 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
               />
             </div>
 
-            <div className="product-grid-meta product-grid-meta--sketch">
+            <div className="product-grid-meta product-grid-meta--sketch" data-motion-reveal>
               <div className="product-grid-title-row">
                 <h2>{product.title}</h2>
                 <CartGlyph />
@@ -104,9 +104,9 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
   }
 
   return (
-    <section className="product-showcase" aria-label="Featured products">
+    <section className="product-showcase" aria-label="Featured products" data-motion-reveal data-motion-parallax="0.98">
       <div className="product-showcase-grid-label">
-        <p>Products</p>
+        <p data-motion-reveal data-motion-parallax="0.86">Products</p>
       </div>
       {products.map((product, index) => (
         <button
@@ -116,7 +116,7 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
           onClick={() => onSelect(product)}
           aria-label={`Open ${product.title}`}
         >
-          <div className="product-image-stage product-image-stage--grid">
+          <div className="product-image-stage product-image-stage--grid" data-motion-reveal>
             <img
               className="product-showcase-image"
               src={product.image}
@@ -124,7 +124,7 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
             />
           </div>
 
-          <div className="product-grid-meta">
+          <div className="product-grid-meta" data-motion-reveal>
             <div className="product-grid-title-row">
               <h2>{product.title}</h2>
               <CartGlyph />

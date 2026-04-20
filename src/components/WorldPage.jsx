@@ -77,6 +77,7 @@ function WorldContactItem({ item, index, onOpen }) {
     <button
       type="button"
       className={`world-contact-sheet__item${item.isCutout ? ' world-contact-sheet__item--cutout' : ''}`}
+      data-motion-reveal
       style={{
         width: item.width,
         height: item.height,
@@ -97,6 +98,7 @@ function WorldLoadingItem({ item, index }) {
   return (
     <div
       className="world-contact-sheet__item world-contact-sheet__item--loading"
+      data-motion-reveal
       style={{
         width: item.width,
         height: item.height,
@@ -192,8 +194,9 @@ export function WorldPage({ slides = [], loading = false, compact = false }) {
     <section
       className={`world-page${compact ? ' world-page--compact' : ''}${isReady ? ' world-page--ready' : ' world-page--entering'}`}
       aria-label="World"
+      data-motion-reveal
     >
-      <div className="world-contact-sheet">
+      <div className="world-contact-sheet" data-motion-parallax="0.98">
         <div className="world-contact-sheet__rail" data-world-contact-sheet data-world-ready={isReady ? 'true' : 'false'}>
           {railItems.map((item, index) =>
             loading && contactItems.length === 0 ? (

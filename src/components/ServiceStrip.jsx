@@ -4,7 +4,12 @@ function ImagePanel() {
   const { image } = useLandingImage()
 
   return (
-    <article className="service-card service-card--image" aria-label="Landing image">
+    <article
+      className="service-card service-card--image"
+      aria-label="Landing image"
+      data-motion-reveal
+      data-motion-parallax="0.98"
+    >
       <div className="service-image-card">
         {image?.imageSrc ? (
           <img src={image.imageSrc} alt={image.title || 'Landing page image'} />
@@ -20,7 +25,7 @@ function ImagePanel() {
 
 export function ServiceStrip() {
   return (
-    <section className="service-strip service-strip--image" aria-label="Landing image">
+    <section className="service-strip service-strip--image" aria-label="Landing image" data-motion-reveal>
       <ImagePanel />
     </section>
   )

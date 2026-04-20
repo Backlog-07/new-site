@@ -31,22 +31,28 @@ export function SubscribeSection() {
   }
 
   return (
-    <section className="subscribe-section" aria-label="Newsletter subscribe">
+    <section className="subscribe-section" aria-label="Newsletter subscribe" data-motion-reveal>
       <div className="subscribe-section__inner">
         <div className="subscribe-section__copy">
-          <p className="subscribe-section__kicker">Newsletter</p>
-          <h2>Join the list.</h2>
-          <p className="subscribe-section__support">
+          <p className="subscribe-section__kicker" data-motion-reveal data-motion-parallax="0.9">
+            Newsletter
+          </p>
+          <h2 data-motion-reveal data-motion-parallax="0.82">Join the list.</h2>
+          <p className="subscribe-section__support" data-motion-reveal>
             Get product drops and store updates straight to your inbox.
           </p>
-          <div className="subscribe-section__features" aria-label="Newsletter benefits">
+          <div
+            className="subscribe-section__features"
+            aria-label="Newsletter benefits"
+            data-motion-reveal
+          >
             <span>Early access</span>
             <span>Restock alerts</span>
             <span>Private drops</span>
           </div>
         </div>
 
-        <div className="subscribe-section__panel">
+        <div className="subscribe-section__panel" data-motion-reveal data-motion-parallax="0.98">
           <form className="subscribe-section__form" onSubmit={handleSubmit}>
             <label className="sr-only" htmlFor="subscribe-email">
               Your E-mail

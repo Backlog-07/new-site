@@ -103,7 +103,7 @@ export function ProductDetail({
   return (
     <section className="product-detail-page product-detail-page--editorial" aria-label={product.title}>
       <div className="product-detail-layout product-detail-layout--editorial">
-        <div className="product-detail-media" aria-label={`${product.title} gallery`}>
+        <div className="product-detail-media" aria-label={`${product.title} gallery`} data-motion-reveal data-motion-parallax="0.98">
           <figure className="product-detail-gallery-item product-detail-gallery-item--hero">
             <img src={heroImage} alt={product.title} />
           </figure>
@@ -154,6 +154,7 @@ export function ProductDetail({
 
         <aside
           className="product-detail-panel product-detail-panel--editorial"
+          data-motion-reveal
           style={{
             position: 'sticky',
             top: 0,
@@ -165,10 +166,12 @@ export function ProductDetail({
           <div className="product-detail-panel-inner">
             <p className="detail-kicker">collections / apparel</p>
             <div className="detail-heading-row">
-              <h1 className="detail-title">{product.shortName}</h1>
+              <h1 className="detail-title" data-motion-reveal data-motion-parallax="0.84">
+                {product.shortName}
+              </h1>
               <p className="detail-price">{product.price}</p>
             </div>
-            <div className="detail-info-switcher" aria-label="Product information selectors">
+            <div className="detail-info-switcher" aria-label="Product information selectors" data-motion-reveal>
               {[
                 { id: 'details', label: 'Details' },
                 { id: 'washcare', label: 'Washcare' },
@@ -185,7 +188,7 @@ export function ProductDetail({
               ))}
             </div>
 
-            <div className="detail-info-panel" aria-live="polite">
+            <div className="detail-info-panel" aria-live="polite" data-motion-reveal>
               {activeInfo === 'details' ? (
                 <p className="detail-description">{infoSections.details}</p>
               ) : (
@@ -197,7 +200,7 @@ export function ProductDetail({
               )}
             </div>
 
-            <div className="detail-variant-group">
+            <div className="detail-variant-group" data-motion-reveal>
               <div className="detail-variant-header">
                 <p className="detail-label">Size</p>
                 <span className="detail-variant-meta">{selectedSize || 'select a size'}</span>
@@ -215,7 +218,7 @@ export function ProductDetail({
               </div>
             </div>
 
-            <div className="detail-actions">
+            <div className="detail-actions" data-motion-reveal>
               <button
                 type="button"
                 className="detail-secondary-btn"

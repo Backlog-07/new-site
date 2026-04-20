@@ -67,7 +67,7 @@ function MobileLinkGroup({ title, links, className = '', onAboutOpen }) {
 
 export function Footer({ onAboutOpen }) {
   return (
-    <footer className="site-footer" aria-label="Footer">
+    <footer className="site-footer" aria-label="Footer" data-motion-reveal>
       <div className="footer-panel">
         <LinkColumn title="Shop" links={shopLinks} />
         <LinkColumn title="Corporate Info" links={corporateLinks} />
