@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap');
 
 :root {
   --surface: #ececef;
@@ -11,6 +11,7 @@
   --accent-bright: #c7cdd4;
   --ink: #111111;
   --ui: 'Space Grotesk', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+  --intro: 'Inter Tight', 'Space Grotesk', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
   --display: 'Archivo Black', Impact, Haettenschweiler, 'Arial Black', sans-serif;
   --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   --motion-ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
