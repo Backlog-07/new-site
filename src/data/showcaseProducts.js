@@ -1,6 +1,23 @@
 import productImage from '../assets/BACKLOG (4).png'
 import { storefrontQuery } from '../lib/shopifyStorefront.js'
 
+const DEFAULT_SWATCHES = ['#171717', '#ded3c1', '#b31d28']
+const DEFAULT_NOTES = ['product details +', 'model wears +', 'sizing chart +']
+const DEFAULT_CARE = [
+  'Cold wash inside out with like colors.',
+  'Use a mild detergent and avoid bleach.',
+  'Lay flat or hang to dry for best shape retention.',
+]
+const DEFAULT_SIZES = [
+  { label: 'XXS', available: true, merchandiseId: null },
+  { label: 'XS', available: false, merchandiseId: null },
+  { label: 'S', available: true, merchandiseId: null },
+  { label: 'M', available: true, merchandiseId: null },
+  { label: 'L', available: true, merchandiseId: null },
+  { label: 'XL', available: true, merchandiseId: null },
+  { label: 'XXL', available: false, merchandiseId: null },
+]
+
 export const localShowcaseProducts = [
   {
     id: 'lazy-eye-brown',
@@ -131,14 +148,37 @@ const PRODUCTS_QUERY = `
             altText
           }
         }
-        metafields(identifiers: [
-          { namespace: "custom", key: "details" }
-          { namespace: "custom", key: "care_instructions" }
-          { namespace: "custom", key: "careInstructions" }
-          { namespace: "custom", key: "washcare" }
-          { namespace: "custom", key: "wash_care" }
-          { namespace: "custom", key: "product_details" }
-        ]) {
+        detailsMetafield: metafield(namespace: "custom", key: "details") {
+          namespace
+          key
+          type
+          value
+        }
+        productDetailsMetafield: metafield(namespace: "custom", key: "product_details") {
+          namespace
+          key
+          type
+          value
+        }
+        careInstructionsMetafield: metafield(namespace: "custom", key: "care_instructions") {
+          namespace
+          key
+          type
+          value
+        }
+        careInstructionsLegacyMetafield: metafield(namespace: "custom", key: "careInstructions") {
+          namespace
+          key
+          type
+          value
+        }
+        washCareMetafield: metafield(namespace: "custom", key: "washcare") {
+          namespace
+          key
+          type
+          value
+        }
+        washCareLegacyMetafield: metafield(namespace: "custom", key: "wash_care") {
           namespace
           key
           type
@@ -173,23 +213,6 @@ const PRODUCTS_QUERY = `
   }
 `
 
-const DEFAULT_SWATCHES = ['#171717', '#ded3c1', '#b31d28']
-const DEFAULT_NOTES = ['product details +', 'model wears +', 'sizing chart +']
-const DEFAULT_CARE = [
-  'Cold wash inside out with like colors.',
-  'Use a mild detergent and avoid bleach.',
-  'Lay flat or hang to dry for best shape retention.',
-]
-const DEFAULT_SIZES = [
-  { label: 'XXS', available: true, merchandiseId: null },
-  { label: 'XS', available: false, merchandiseId: null },
-  { label: 'S', available: true, merchandiseId: null },
-  { label: 'M', available: true, merchandiseId: null },
-  { label: 'L', available: true, merchandiseId: null },
-  { label: 'XL', available: true, merchandiseId: null },
-  { label: 'XXL', available: false, merchandiseId: null },
-]
-
 function formatPrice(amount, currencyCode) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -203,17 +226,6 @@ function optionValues(product, optionName) {
     (entry) => entry.name.toLowerCase() === optionName.toLowerCase(),
   )
   return option?.values?.length ? option.values : []
-}
-
-function metafieldValue(product, keys = [], namespace = 'custom') {
-  const metafields = product.metafields ?? []
-  const normalizedKeys = keys.map((key) => key.toLowerCase())
-  const match = metafields.find(
-    (field) =>
-      (field.namespace || '').toLowerCase() === namespace.toLowerCase() &&
-      normalizedKeys.includes((field.key || '').toLowerCase()),
-  )
-  return match ?? null
 }
 
 function richTextToPlainText(value) {
@@ -304,13 +316,14 @@ function mapShopifyProduct(product, index) {
         product.priceRange.minVariantPrice.currencyCode,
       )
     : 'INR 0.00'
-  const detailsMetafield = metafieldValue(product, ['details', 'product_details'])
-  const careMetafield = metafieldValue(product, [
-    'care_instructions',
-    'careInstructions',
-    'washcare',
-    'wash_care',
-  ])
+  const detailsMetafield =
+    product.detailsMetafield ?? product.productDetailsMetafield ?? null
+  const careMetafield =
+    product.careInstructionsMetafield ??
+    product.careInstructionsLegacyMetafield ??
+    product.washCareMetafield ??
+    product.washCareLegacyMetafield ??
+    null
   const productDescription = product.description?.trim() || 'A minimal garment selected from the Shopify catalog.'
   const detailsText = richTextToPlainText(detailsMetafield?.value) || productDescription
   const careText = richTextToPlainText(careMetafield?.value)
@@ -342,7 +355,7 @@ export async function fetchShowcaseProducts(limit = 4) {
   const nodes = data?.products?.nodes ?? []
 
   if (!nodes.length) {
-    return localShowcaseProducts
+    return []
   }
 
   return nodes.map((node, index) => mapShopifyProduct(node, index))

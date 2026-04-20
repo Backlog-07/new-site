@@ -13,6 +13,7 @@ import { useShowcaseProducts } from './hooks/useShowcaseProducts.js'
 import { useShopifyCart } from './hooks/useShopifyCart.js'
 import { CartDrawer } from './components/CartDrawer.jsx'
 import { useWorldGallery } from './hooks/useWorldGallery.js'
+import { useScrollReveal } from './hooks/useScrollReveal.js'
 
 function getPageFromPathname(pathname) {
   if (pathname === '/world') {
@@ -47,6 +48,7 @@ function App() {
   const [isBuyingNow, setIsBuyingNow] = useState(false)
   const [introProgress, setIntroProgress] = useState(0)
   const [showIntro, setShowIntro] = useState(true)
+  const [isIntroExiting, setIsIntroExiting] = useState(false)
   const [isTouchLayout, setIsTouchLayout] = useState(() =>
     window.matchMedia('(max-width: 1024px)').matches,
   )
@@ -55,6 +57,7 @@ function App() {
     startY: 0,
     startScrollY: 0,
   })
+  const lastScrollY = useRef(0)
   const { products, loading, error } = useShowcaseProducts()
   const {
     slides: worldSlides,
@@ -174,17 +177,21 @@ function App() {
   useEffect(() => {
     let active = true
     let hideTimer = null
+    let exitTimer = null
 
     const start = window.setInterval(() => {
       setIntroProgress((current) => {
         if (current >= 100) {
           window.clearInterval(start)
-          if (hideTimer == null) {
-            hideTimer = window.setTimeout(() => {
-              if (active) {
-                setShowIntro(false)
-              }
-            }, 260)
+          if (exitTimer == null) {
+            // Brief pause at 100%, then trigger bar-wipe exit
+            exitTimer = window.setTimeout(() => {
+              if (active) setIsIntroExiting(true)
+              // Hide after bars finish animating (~1 100ms total)
+              hideTimer = window.setTimeout(() => {
+                if (active) setShowIntro(false)
+              }, 1100)
+            }, 120)
           }
           return 100
         }
@@ -197,11 +204,47 @@ function App() {
     return () => {
       active = false
       window.clearInterval(start)
-      if (hideTimer != null) {
-        window.clearTimeout(hideTimer)
-      }
+      if (hideTimer != null) window.clearTimeout(hideTimer)
+      if (exitTimer != null) window.clearTimeout(exitTimer)
     }
   }, [])
+
+  // Header scroll-hide: hides on scroll-down, reveals on scroll-up
+  useEffect(() => {
+    const header = document.querySelector('.site-header')
+    if (!header) return
+
+    // Skip hide/show when intro is active
+    if (showIntro) return
+
+    let ticking = false
+
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      window.requestAnimationFrame(() => {
+        const y = window.scrollY
+        const delta = y - lastScrollY.current
+
+        if (y < 100) {
+          header.classList.remove('site-header--hidden')
+        } else if (delta > 6) {
+          header.classList.add('site-header--hidden')
+        } else if (delta < -3) {
+          header.classList.remove('site-header--hidden')
+        }
+
+        lastScrollY.current = y
+        ticking = false
+      })
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [showIntro])
+
+  // Activate scroll-reveal elements across the page
+  useScrollReveal('.scroll-reveal')
 
   async function handleAddToCart(sizeEntry) {
     if (!selectedProduct || !sizeEntry) {
@@ -313,7 +356,11 @@ function App() {
   return (
     <section className={`storefront ${showIntro ? 'storefront--intro-active' : ''}`}>
       {showIntro ? (
-        <div className="intro-overlay" aria-label="Loading storefront" role="status">
+        <div
+          className={`intro-overlay${isIntroExiting ? ' intro-overlay--exiting' : ''}`}
+          aria-label="Loading storefront"
+          role="status"
+        >
           <div className="intro-shell">
             <div className="intro-stage">
               <p className="intro-kicker">backlog</p>
@@ -327,6 +374,14 @@ function App() {
                 />
               </div>
             </div>
+          </div>
+          {/* Cinematic bar-wipe exit — 5 vertical bars sweep up on exit */}
+          <div className="intro-wipe" aria-hidden="true">
+            <div className="intro-wipe-bar" style={{ '--i': 0 }} />
+            <div className="intro-wipe-bar" style={{ '--i': 1 }} />
+            <div className="intro-wipe-bar" style={{ '--i': 2 }} />
+            <div className="intro-wipe-bar" style={{ '--i': 3 }} />
+            <div className="intro-wipe-bar" style={{ '--i': 4 }} />
           </div>
         </div>
       ) : null}

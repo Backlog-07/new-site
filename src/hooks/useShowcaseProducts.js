@@ -4,9 +4,7 @@ import { hasShopifyStorefrontConfig } from '../lib/shopifyStorefront.js'
 
 export function useShowcaseProducts() {
   const isConfigured = hasShopifyStorefrontConfig()
-  const [products, setProducts] = useState(
-    isConfigured ? [] : localShowcaseProducts,
-  )
+  const [products, setProducts] = useState(isConfigured ? [] : localShowcaseProducts)
   const [error, setError] = useState(null)
 
   useEffect(() => {
