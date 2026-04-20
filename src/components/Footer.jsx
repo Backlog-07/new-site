@@ -34,22 +34,36 @@ function LinkColumn({ title, links }) {
   )
 }
 
-function MobileLinkGroup({ title, links, className = '' }) {
+function MobileLinkGroup({ title, links, className = '', onAboutOpen }) {
   return (
     <section className={`footer-mobile__col ${className}`.trim()}>
       <h2 className="footer-mobile__col-title">{title}</h2>
       <ul className="footer-mobile__list">
-        {links.map((link) => (
-          <li key={link}>
-            <a href="#top">{link}</a>
-          </li>
-        ))}
+        {links.map((link) => {
+          const isAboutLink = link === 'About Us'
+
+          return (
+            <li key={link}>
+              {isAboutLink ? (
+                <button
+                  type="button"
+                  className="footer-mobile__link-button"
+                  onClick={onAboutOpen}
+                >
+                  {link}
+                </button>
+              ) : (
+                <a href="#top">{link}</a>
+              )}
+            </li>
+          )
+        })}
       </ul>
     </section>
   )
 }
 
-export function Footer() {
+export function Footer({ onAboutOpen }) {
   return (
     <footer className="site-footer" aria-label="Footer">
       <div className="footer-panel">
@@ -71,12 +85,9 @@ export function Footer() {
 
         <div className="footer-mobile__grid">
           <MobileLinkGroup
-            title="Connect"
-            links={['Call', 'Text (WhatsApp)', 'Instagram', 'YouTube', 'LinkedIn']}
-          />
-          <MobileLinkGroup
-            title="Brand"
-            links={['Our story', 'Walk-in Stores', 'Collaborations', 'Careers', 'Media', 'Blogs']}
+            title="About Us"
+            links={['About Us', 'Careers', 'Sustainability', 'Press']}
+            onAboutOpen={onAboutOpen}
           />
           <MobileLinkGroup
             title="Support"

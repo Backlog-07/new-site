@@ -373,7 +373,7 @@ function App() {
                 style={{ '--stack-layer': 6 }}
                 data-gsap-reveal
               >
-                <Footer />
+                <Footer onAboutOpen={handleAboutOpen} />
               </div>
             </div>
           ) : route.page === 'world' ? (
@@ -417,7 +417,7 @@ function App() {
       </main>
       {!isHomeStack ? (
         <div data-gsap-reveal>
-          <Footer />
+          <Footer onAboutOpen={handleAboutOpen} />
         </div>
       ) : null}
       <CartDrawer
