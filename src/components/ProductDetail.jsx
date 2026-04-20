@@ -31,6 +31,7 @@ export function ProductDetail({
   const firstAvailableSize = product.sizes.find((size) => size.available)?.label ?? ''
   const [selectedSize, setSelectedSize] = useState(firstAvailableSize)
   const [activeInfo, setActiveInfo] = useState('details')
+  const [mobileAccordionOpen, setMobileAccordionOpen] = useState('details')
   const [mobileImageIndex, setMobileImageIndex] = useState(0)
   const swipeStartX = useRef(0)
   const swipeStartY = useRef(0)
@@ -223,6 +224,54 @@ export function ProductDetail({
               >
                 {buyingNow ? 'REDIRECTING...' : 'BUY NOW'}
               </button>
+            </div>
+
+            <div className="detail-mobile-accordion" aria-label="Product details and care">
+              {[
+                {
+                  id: 'details',
+                  label: 'Details',
+                  content: infoSections.details,
+                  type: 'text',
+                },
+                {
+                  id: 'care',
+                  label: 'Care Instructions',
+                  content: infoSections.washcare,
+                  type: 'list',
+                },
+              ].map((section) => {
+                const isOpen = mobileAccordionOpen === section.id
+
+                return (
+                  <div key={section.id} className={`detail-mobile-accordion__item${isOpen ? ' is-open' : ''}`}>
+                    <button
+                      type="button"
+                      className="detail-mobile-accordion__trigger"
+                      aria-expanded={isOpen}
+                      onClick={() =>
+                        setMobileAccordionOpen((current) => (current === section.id ? '' : section.id))
+                      }
+                    >
+                      <span>{section.label}</span>
+                      <span className="detail-mobile-accordion__icon" aria-hidden="true">
+                        {isOpen ? '−' : '+'}
+                      </span>
+                    </button>
+                    <div className="detail-mobile-accordion__panel" aria-hidden={!isOpen}>
+                      {section.type === 'text' ? (
+                        <p>{section.content}</p>
+                      ) : (
+                        <ul>
+                          {section.content.map((line) => (
+                            <li key={line}>{line}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </aside>

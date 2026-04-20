@@ -6098,6 +6098,70 @@
     min-height: 50px;
     font-size: 0.78rem;
   }
+
+  .detail-mobile-accordion {
+    display: grid;
+    gap: 0;
+    margin-top: 4px;
+    border-top: 1px solid rgba(17, 16, 16, 0.1);
+  }
+
+  .detail-mobile-accordion__item {
+    border-bottom: 1px solid rgba(17, 16, 16, 0.1);
+  }
+
+  .detail-mobile-accordion__trigger {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border: 0;
+    background: transparent;
+    font-family: var(--ui);
+    font-size: 0.86rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #111010;
+    cursor: pointer;
+  }
+
+  .detail-mobile-accordion__trigger span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .detail-mobile-accordion__icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    color: rgba(17, 16, 16, 0.72);
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .detail-mobile-accordion__panel {
+    display: grid;
+    gap: 10px;
+    padding: 0 0 12px;
+    color: rgba(17, 16, 16, 0.7);
+    font-family: var(--ui);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .detail-mobile-accordion__panel p {
+    margin: 0;
+  }
+
+  .detail-mobile-accordion__panel ul {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+  }
 }
 
 /* Final About override */
@@ -6848,7 +6912,11 @@ body {
 
 @media (max-width: 767px) {
   .site-footer {
-    padding: 22px 16px 16px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: auto !important;
+    padding: 26px 16px 20px !important;
     background: var(--site-bg, #f7f4ef) !important;
   }
 
@@ -6868,6 +6936,7 @@ body {
   .footer-mobile {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 14px;
     padding: 0;
     width: 100%;
@@ -6976,7 +7045,6 @@ body {
     text-align: center;
     padding: 8px 0 0;
     border-top: 1px solid rgba(17, 16, 16, 0.08);
-    width: 100%;
   }
 }
 
