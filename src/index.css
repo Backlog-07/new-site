@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+:root {
+  --surface: #ececef;
+  --surface-alt: #dedfe3;
+  --border: rgba(18, 18, 18, 0.12);
+  --border-strong: rgba(18, 18, 18, 0.34);
+  --text-strong: #111111;
+  --text-muted: rgba(17, 17, 17, 0.66);
+  --accent-strong: #6c7480;
+  --accent-bright: #c7cdd4;
+  --ink: #111111;
+  --ui: 'Space Grotesk', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+  --display: 'Archivo Black', Impact, Haettenschweiler, 'Arial Black', sans-serif;
+  --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  --motion-ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-slow-settle: cubic-bezier(0.25, 1, 0.5, 1);
+  --motion-ease-float: cubic-bezier(0.45, 0, 0.55, 1);
+  --motion-duration-premium: 960ms;
+  --motion-duration-slow: 1.1s;
+  --shadow-soft:
+    0 12px 0 rgba(18, 18, 18, 0.12), 0 24px 64px rgba(18, 18, 18, 0.12);
+
+  font-family: var(--ui);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text-muted);
+  background: linear-gradient(180deg, #ececef 0%, #e1e3e7 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 8% 8%, rgba(108, 116, 128, 0.08), transparent 18%),
+    radial-gradient(circle at 92% 16%, rgba(17, 17, 17, 0.05), transparent 20%),
+    linear-gradient(180deg, #ececef 0%, #e1e3e7 100%);
+  color: var(--text-strong);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--accent-bright);
+  color: #111111;
+}
