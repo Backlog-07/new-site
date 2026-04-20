@@ -3387,22 +3387,23 @@
   }
 
   .subscribe-section__support {
-    margin: 2px 0 0;
+    margin: 4px 0 0;
     font-family: var(--ui);
-    font-size: 0.98rem;
-    line-height: 1.7;
-    color: rgba(17, 16, 16, 0.68);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--site-ink);
   }
 
   .subscribe-section__features {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px 12px;
-    margin-top: 14px;
+    gap: 6px 12px;
+    margin-top: 16px;
     font-family: var(--ui);
-    font-size: 0.85rem;
-    color: rgba(17, 16, 16, 0.55);
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    color: rgba(17, 16, 16, 0.6);
   }
 
   .subscribe-section__features span {
@@ -3411,7 +3412,7 @@
   }
 
   .subscribe-section__features span:not(:last-child)::after {
-    content: "•";
+    content: "\2022";
     margin-left: 12px;
     opacity: 0.4;
   }
@@ -3506,7 +3507,8 @@
 
 @media (max-width: 560px) {
   .subscribe-section {
-    padding: 48px 16px 64px;
+    padding: 48px 16px 24px;
+    min-height: auto;
   }
 
   .subscribe-section__inner {
@@ -6387,3 +6389,9 @@ body {
 
 /* Overriding footer background */
 .footer-panel { background: transparent !important; box-shadow: none !important; border: none !important; }
+
+@media (max-width: 767px) {
+  .product-showcase, .product-showcase--sketch, .customer-reviews-section, .service-strip, .about-page, .world-page, .product-detail-page, .subscribe-section, .site-footer {
+    background: transparent !important;
+  }
+}
