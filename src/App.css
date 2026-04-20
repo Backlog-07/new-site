@@ -4370,6 +4370,7 @@
   transform: translateY(22px) scale(0.9);
   transform-origin: center bottom;
   will-change: transform, opacity;
+  transition: box-shadow 240ms var(--motion-ease-float);
 }
 
 .world-contact-sheet__item + .world-contact-sheet__item {
@@ -4389,6 +4390,22 @@
   object-position: center center;
   background: transparent;
   box-shadow: 0 10px 18px rgba(17, 16, 16, 0.08);
+  transform: scale(1.01);
+  transform-origin: center center;
+  transition:
+    transform 420ms var(--motion-ease-float),
+    filter 420ms var(--motion-ease-float);
+}
+
+.world-page--ready .world-contact-sheet__item img {
+  animation: world-image-settle 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--world-order, 0) * 90ms + 180ms);
+}
+
+.world-contact-sheet__item:hover img,
+.world-contact-sheet__item:focus-visible img {
+  transform: scale(1.045);
+  filter: saturate(1.04) contrast(1.03);
 }
 
 .world-contact-sheet__index {
@@ -4561,6 +4578,26 @@
   }
 }
 
+@keyframes world-image-settle {
+  0% {
+    opacity: 0;
+    transform: scale(1.08);
+    filter: blur(6px) saturate(0.92);
+  }
+
+  70% {
+    opacity: 1;
+    transform: scale(1.015);
+    filter: blur(0) saturate(1.01);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.01);
+    filter: blur(0) saturate(1);
+  }
+}
+
 @keyframes world-lightbox-enter {
   0% {
     opacity: 0;
@@ -4695,6 +4732,45 @@
 
   .world-contact-sheet__item--cutout img {
     object-fit: contain;
+  }
+
+  .world-lightbox {
+    padding: 8px;
+    --world-lightbox-shift: 0px;
+  }
+
+  .world-lightbox__stage {
+    width: 100%;
+    height: 100%;
+  }
+
+  .world-lightbox__frame {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100svh;
+    background: rgba(243, 237, 226, 0.08);
+  }
+
+  .world-lightbox__frame img {
+    width: 100%;
+    max-width: 100%;
+    max-height: 88svh;
+    transform: none;
+  }
+
+  .world-lightbox__close {
+    top: 8px;
+    right: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-contact-sheet__item,
+  .world-contact-sheet__item img,
+  .world-page--ready .world-contact-sheet__item,
+  .world-page--ready .world-contact-sheet__item img {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
