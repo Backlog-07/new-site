@@ -13,7 +13,6 @@ import { useShowcaseProducts } from './hooks/useShowcaseProducts.js'
 import { useShopifyCart } from './hooks/useShopifyCart.js'
 import { CartDrawer } from './components/CartDrawer.jsx'
 import { useWorldGallery } from './hooks/useWorldGallery.js'
-import { useLuxuryScroll } from './hooks/useLuxuryScroll.js'
 
 function getPageFromPathname(pathname) {
   if (pathname === '/world') {
@@ -79,7 +78,6 @@ function App() {
     route.page === 'product'
       ? products.find((product) => product.id === route.productId) ?? null
       : null
-  useLuxuryScroll([route.page, route.productId, showIntro, products.length, worldSlides.length])
   const pageTransitionKey =
     route.page === 'home'
       ? 'home'
@@ -346,7 +344,6 @@ function App() {
               <div
                 className="stack-section stack-section--hero"
                 style={{ '--stack-layer': 1 }}
-                data-gsap-reveal
                 onTouchStart={handleStackTouchStart}
                 onTouchMove={handleStackTouchMove}
                 onTouchEnd={handleStackTouchEnd}
@@ -357,7 +354,6 @@ function App() {
               <div
                 className="stack-section stack-section--products"
                 style={{ '--stack-layer': 2 }}
-                data-gsap-reveal
               >
                 <ProductShowcase
                   products={products}
@@ -369,53 +365,44 @@ function App() {
               <div
                 className="stack-section stack-section--services"
                 style={{ '--stack-layer': 4 }}
-                data-gsap-reveal
               >
                 <ServiceStrip />
               </div>
               <div
                 className="stack-section stack-section--subscribe"
                 style={{ '--stack-layer': 5 }}
-                data-gsap-reveal
               >
                 <SubscribeSection />
               </div>
               <div
                 className="stack-section stack-section--footer"
                 style={{ '--stack-layer': 6 }}
-                data-gsap-reveal
               >
                 <Footer onAboutOpen={handleAboutOpen} />
               </div>
             </div>
           ) : route.page === 'world' ? (
-            <div data-gsap-reveal>
-              <WorldPage
-                slides={worldSlides}
-                loading={worldLoading}
-                error={worldError}
-                contentType={worldContentType}
-              />
-            </div>
+            <WorldPage
+              slides={worldSlides}
+              loading={worldLoading}
+              error={worldError}
+              contentType={worldContentType}
+            />
           ) : route.page === 'about' ? (
-            <div data-gsap-reveal>
-              <AboutPage />
-            </div>
+            <AboutPage />
           ) : route.page === 'product' ? (
             selectedProduct ? (
-              <div data-gsap-reveal>
-                <ProductDetail
-                  key={selectedProduct.id}
-                  product={selectedProduct}
-                  onAddToCart={handleAddToCart}
-                  onBuyNow={handleBuyNow}
-                  addingToCart={isAddingToCart}
-                  buyingNow={isBuyingNow}
-                  onBack={handleHomeOpen}
-                />
-              </div>
+              <ProductDetail
+                key={selectedProduct.id}
+                product={selectedProduct}
+                onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
+                addingToCart={isAddingToCart}
+                buyingNow={isBuyingNow}
+                onBack={handleHomeOpen}
+              />
             ) : (
-              <div className="product-detail-page product-detail-page--loading" data-gsap-reveal>
+              <div className="product-detail-page product-detail-page--loading">
                 <div className="product-detail-loading">
                   <p>{loading ? 'Loading product...' : 'Product not found.'}</p>
                   <button type="button" className="product-detail-loading-back" onClick={handleHomeOpen}>
@@ -428,9 +415,7 @@ function App() {
         </div>
       </main>
       {!isHomeStack ? (
-        <div data-gsap-reveal>
-          <Footer onAboutOpen={handleAboutOpen} />
-        </div>
+        <Footer onAboutOpen={handleAboutOpen} />
       ) : null}
       <CartDrawer
         cart={cart}

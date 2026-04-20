@@ -3291,10 +3291,6 @@
   justify-content: stretch;
   overflow: hidden;
   background: inherit;
-  transform: translate3d(0, var(--stack-translate-y, 0px), 0);
-  opacity: var(--stack-opacity, 1);
-  filter: blur(var(--stack-blur, 0px));
-  will-change: transform, opacity, filter;
 }
 
 .stack-section,
@@ -6815,6 +6811,11 @@ body {
     list-style: none;
   }
 
+  .footer-mobile__list li {
+    width: 100%;
+    text-align: center;
+  }
+
   .footer-mobile__col a {
     font-family: var(--ui);
     font-size: 0.88rem;
@@ -6849,6 +6850,7 @@ body {
 
   .footer-mobile__copy {
     margin: 0;
+    width: 100%;
     font-family: var(--mono);
     font-size: 0.62rem;
     letter-spacing: 0.12em;

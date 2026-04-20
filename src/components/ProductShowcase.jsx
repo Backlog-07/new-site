@@ -76,8 +76,6 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
           <button
             type="button"
             className={`product-showcase-card product-showcase-card--sketch ${product.variant}`}
-            data-gsap-reveal
-            data-reveal-index="0"
             onClick={() => onSelect(product)}
             aria-label={`Open ${product.title}`}
           >
@@ -115,8 +113,6 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
           type="button"
           className={`product-showcase-card ${product.variant}`}
           key={product.title}
-          data-gsap-reveal
-          data-reveal-index={index}
           onClick={() => onSelect(product)}
           aria-label={`Open ${product.title}`}
         >
