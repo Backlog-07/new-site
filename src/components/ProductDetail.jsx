@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 function VariantPill({
   label,
@@ -31,6 +31,9 @@ export function ProductDetail({
   const firstAvailableSize = product.sizes.find((size) => size.available)?.label ?? ''
   const [selectedSize, setSelectedSize] = useState(firstAvailableSize)
   const [activeInfo, setActiveInfo] = useState('details')
+  const [mobileImageIndex, setMobileImageIndex] = useState(0)
+  const swipeStartX = useRef(0)
+  const swipeStartY = useRef(0)
   const selectedSizeEntry =
     product.sizes.find((size) => size.label === selectedSize) ?? null
   const imageUrls =
@@ -42,6 +45,42 @@ export function ProductDetail({
   const heroImage = imageUrls[0]
   const scrollImages = imageUrls.slice(1)
   const galleryImages = imageUrls
+
+  useEffect(() => {
+    setMobileImageIndex(0)
+  }, [product.id])
+
+  function handleCarouselTouchStart(event) {
+    const touch = event.touches?.[0]
+    if (!touch) {
+      return
+    }
+
+    swipeStartX.current = touch.clientX
+    swipeStartY.current = touch.clientY
+  }
+
+  function handleCarouselTouchEnd(event) {
+    const touch = event.changedTouches?.[0]
+    if (!touch || galleryImages.length < 2) {
+      return
+    }
+
+    const deltaX = touch.clientX - swipeStartX.current
+    const deltaY = touch.clientY - swipeStartY.current
+
+    if (Math.abs(deltaX) < 44 || Math.abs(deltaX) < Math.abs(deltaY)) {
+      return
+    }
+
+    setMobileImageIndex((current) => {
+      if (deltaX < 0) {
+        return Math.min(current + 1, galleryImages.length - 1)
+      }
+
+      return Math.max(current - 1, 0)
+    })
+  }
 
   const infoSections = {
     details: `${product.brandLine} is presented in a clean, minimal silhouette with a focus on texture, proportion, and drape.`,
@@ -79,7 +118,14 @@ export function ProductDetail({
         </div>
 
         <div className="product-detail-mobile-carousel" aria-label={`${product.title} gallery carousel`}>
-          <div className="product-detail-mobile-carousel__track" tabIndex={0}>
+          <div
+            className="product-detail-mobile-carousel__track"
+            tabIndex={0}
+            style={{ transform: `translateX(-${mobileImageIndex * 100}%)` }}
+            onTouchStart={handleCarouselTouchStart}
+            onTouchEnd={handleCarouselTouchEnd}
+            onTouchCancel={handleCarouselTouchEnd}
+          >
             {galleryImages.map((src, index) => (
               <figure
                 key={`${src}-${index}`}
@@ -89,7 +135,6 @@ export function ProductDetail({
               </figure>
             ))}
           </div>
-          <p className="product-detail-mobile-carousel__hint">Swipe for more views</p>
         </div>
 
         <aside
