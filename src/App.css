@@ -1,6 +1,6 @@
 .storefront {
   min-height: 100vh;
-  background: #fff;
+  background: var(--site-surface);
   display: flex;
   flex-direction: column;
 }
@@ -317,7 +317,7 @@
   width: 100%;
   min-height: calc(100vh - 60px);
   padding: 18px 0 28px;
-  background: #fff;
+  background: var(--site-surface);
 }
 
 .world-page--compact {
@@ -513,7 +513,7 @@
   width: 100%;
   min-height: calc(100vh - var(--site-header-height, 60px));
   padding: 0 12px 14px;
-  background: #fff;
+  background: var(--site-surface);
   color: #111010;
 }
 
@@ -772,7 +772,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: #fff;
+  background: var(--site-surface);
   padding-top: 12px;
 }
 
@@ -840,7 +840,7 @@
 .customer-reviews-section {
   width: 100%;
   padding: 28px 16px 80px;
-  background: #fff;
+  background: var(--site-surface);
 }
 
 .customer-reviews-grid {
@@ -854,7 +854,7 @@
 .customer-review-card {
   overflow: hidden;
   border-radius: 14px;
-  background: #fff;
+  background: var(--site-surface);
   border: 1px solid rgba(17, 16, 16, 0.08);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
@@ -1364,7 +1364,7 @@
 
 .detail-tertiary-btn {
   border: 1px solid rgba(17, 16, 16, 0.16);
-  background: #fff;
+  background: var(--site-surface);
   color: rgba(17, 16, 16, 0.8);
 }
 
@@ -1522,7 +1522,7 @@
   height: 28px;
   border: 1px solid rgba(17, 16, 16, 0.14);
   border-radius: 999px;
-  background: #fff;
+  background: var(--site-surface);
   color: #111010;
   display: grid;
   place-items: center;
@@ -1631,7 +1631,7 @@
   margin: 0;
   padding: 0;
   display: block;
-  background: #fff;
+  background: var(--site-surface);
 }
 
 .service-strip--image {
@@ -1743,7 +1743,7 @@
   width: 100%;
   padding: 18px 16px 18px;
   border-top: 1px solid #efefef;
-  background: #fff;
+  background: var(--site-surface);
   font-family: var(--ui);
   text-transform: lowercase;
   letter-spacing: 0.04em;
@@ -4705,7 +4705,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0;
   align-items: start;
-  background: #fff;
+  background: var(--site-surface);
 }
 
 .product-showcase-card {
@@ -4715,7 +4715,7 @@
   gap: 0;
   align-content: start;
   justify-self: stretch;
-  background: #fff;
+  background: var(--site-surface);
   border-right: 1px solid rgba(17, 16, 16, 0.08);
   border-bottom: 1px solid rgba(17, 16, 16, 0.08);
 }
@@ -4826,7 +4826,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0;
-  background: #fff;
+  background: var(--site-surface);
 }
 
 @media (max-width: 980px) {
@@ -4908,11 +4908,12 @@
 }
 
 .product-showcase-sketch-shell {
+  grid-column: 1 / -1;
   width: 100%;
   min-height: calc(100svh - clamp(32px, 4vw, 56px));
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   gap: clamp(14px, 1.8vw, 22px);
   padding-top: clamp(18px, 2vw, 30px);
@@ -4951,8 +4952,8 @@
 
 .product-showcase-card--sketch {
   width: min(390px, 100%);
-  justify-self: flex-start;
-  align-self: flex-start;
+  justify-self: center;
+  align-self: center;
   margin-top: 0;
   display: grid;
   gap: 0;
@@ -5021,12 +5022,12 @@
 
 @media (max-width: 980px) {
   .product-showcase-sketch-shell {
-    align-items: flex-start;
+    align-items: center;
   }
 
   .product-showcase-card--sketch {
     width: min(390px, 100%);
-    align-self: flex-start;
+    align-self: center;
   }
 }
 
@@ -5056,18 +5057,17 @@
 /* Unified footer */
 .site-footer {
   width: 100%;
-  min-height: 100svh;
-  height: 100%;
+  min-height: auto;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   position: relative;
   overflow: hidden;
-  padding: clamp(124px, 18vh, 196px) clamp(34px, 3vw, 60px) clamp(52px, 6vw, 84px);
+  padding: clamp(52px, 8vw, 96px) clamp(34px, 3vw, 60px) clamp(52px, 6vw, 84px);
   background:
-    radial-gradient(circle at 50% 8%, rgba(255, 255, 255, 0.82), transparent 22%),
-    radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.38), transparent 18%),
-    linear-gradient(180deg, #f3f3f1 0%, #eceae6 100%);
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.48), transparent 18%),
+    linear-gradient(180deg, #f3f1eb 0%, #ece8e2 100%);
   box-sizing: border-box;
   font-family: var(--ui);
   color: #404040;
@@ -5079,9 +5079,9 @@
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 18%),
-    linear-gradient(90deg, rgba(17, 16, 16, 0.02), rgba(17, 16, 16, 0) 10%, rgba(17, 16, 16, 0) 90%, rgba(17, 16, 16, 0.02));
-  opacity: 0.85;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 14%),
+    linear-gradient(90deg, rgba(17, 16, 16, 0.015), rgba(17, 16, 16, 0) 12%, rgba(17, 16, 16, 0) 88%, rgba(17, 16, 16, 0.015));
+  opacity: 0.55;
 }
 
 .footer-panel {
@@ -5359,7 +5359,7 @@
 
 .product-detail-media {
   min-width: 0;
-  background: #fff;
+  background: var(--site-surface);
   padding: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.98fr);
@@ -5371,7 +5371,7 @@
   margin: 0;
   border: 0;
   overflow: hidden;
-  background: #fff;
+  background: var(--site-surface);
   padding: 0;
   display: flex;
   align-items: center;
@@ -5412,7 +5412,7 @@
 .product-detail-panel--editorial {
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--site-surface);
   border-left: 1px solid rgba(17, 16, 16, 0.08);
   font-family: var(--ui);
   min-height: 100svh;
@@ -5473,7 +5473,7 @@
   padding: 0 14px;
   border-radius: 999px;
   border: 1px solid rgba(17, 16, 16, 0.82);
-  background: #fff;
+  background: var(--site-surface);
   color: #111010;
   font-family: var(--ui);
   font-size: 0.74rem;
@@ -5529,7 +5529,7 @@
   padding: 0 14px;
   border-radius: 999px;
   border: 1px solid rgba(17, 16, 16, 0.82);
-  background: #fff;
+  background: var(--site-surface);
   color: #111010;
   font-family: var(--ui);
   font-size: 0.78rem;
@@ -5679,7 +5679,7 @@
   width: 100%;
   min-height: calc(100vh - var(--site-header-height, 60px));
   padding: 8px 12px 12px;
-  background: #fff;
+  background: var(--site-surface);
   color: #111010;
 }
 
@@ -5768,7 +5768,7 @@
 /* Unified site palette */
 :root {
   --site-bg: #f7f4ef;
-  --site-surface: #ffffff;
+  --site-surface: #f7f4ef;
   --site-ink: #111010;
   --site-muted: rgba(17, 16, 16, 0.66);
   --site-border: rgba(17, 16, 16, 0.12);
@@ -6040,37 +6040,37 @@ body {
 
 .intro-kicker {
   margin: 0;
-  font-family: var(--serif);
-  font-size: 1rem;
-  letter-spacing: 0.18em;
+  font-family: var(--display);
+  font-size: clamp(0.98rem, 1.2vw, 1.1rem);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--site-ink) !important;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .intro-readout {
   margin-top: 12px;
-  font-family: var(--serif);
+  font-family: var(--ui);
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.74rem;
-  color: rgba(17, 16, 16, 0.62) !important;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  color: rgba(17, 16, 16, 0.58) !important;
 }
 
 .intro-readout strong {
   display: inline-block;
   margin-top: 4px;
-  font-family: var(--serif);
-  font-size: 1.35rem;
-  letter-spacing: 0.08em;
+  font-family: var(--display);
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
   color: var(--site-ink) !important;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .intro-progress {
   height: 2px;
   margin: 20px auto 0;
-  width: min(280px, 100%);
+  width: min(320px, 100%);
   border-radius: 999px;
   background: rgba(17, 16, 16, 0.1) !important;
   overflow: hidden;
@@ -6092,21 +6092,21 @@ body {
   }
 
   .intro-kicker {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
   }
 
   .intro-readout {
     margin-top: 8px;
-    font-size: 0.66rem;
+    font-size: 0.64rem;
   }
 
   .intro-readout strong {
-    font-size: 1.12rem;
+    font-size: 1.2rem;
   }
 
   .intro-progress {
     margin-top: 14px;
-    width: min(250px, 100%);
+    width: min(280px, 100%);
   }
 }
 
@@ -6275,7 +6275,7 @@ body {
   .header-mobile-menu__link {
     min-height: 44px;
     border: 1px solid rgba(17, 16, 16, 0.12);
-    background: #fff;
+    background: var(--site-surface);
     color: #111010;
     font-family: var(--ui);
     font-size: 0.74rem;
@@ -6317,3 +6317,6 @@ body {
     gap: 12px;
   }
 }
+
+/* Overriding footer background */
+.footer-panel { background: transparent !important; box-shadow: none !important; border: none !important; }
