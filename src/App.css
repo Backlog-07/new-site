@@ -5675,6 +5675,7 @@
   display: grid;
   gap: 0;
   margin-left: -1px;
+  border-left: 1px solid rgba(17, 16, 16, 0.12);
 }
 
 .product-detail-gallery-item--scroll {
@@ -5692,6 +5693,12 @@
   object-position: center center;
   transform: scale(1.04);
   transform-origin: center center;
+}
+
+.product-detail-gallery-item--hero img {
+  object-fit: cover;
+  object-position: center center;
+  transform: scale(1.1);
 }
 
 .product-detail-panel--editorial {
@@ -5929,6 +5936,7 @@
   .product-detail-gallery-column {
     gap: 0;
     margin-left: -1px;
+    border-left: 1px solid rgba(17, 16, 16, 0.12);
   }
 }
 
@@ -5948,6 +5956,10 @@
 
   .product-detail-media {
     display: none;
+  }
+
+  .product-detail-gallery-column {
+    border-left: 0;
   }
 
   .product-detail-mobile-carousel {
