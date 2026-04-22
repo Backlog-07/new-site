@@ -13,7 +13,7 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const header = document.querySelector('.site-header')
     const revealTargets = Array.from(document.querySelectorAll('[data-motion-reveal]'))
-    const parallaxTargets = Array.from(document.querySelectorAll('[data-motion-parallax]'))
+    const parallaxTargets = Array.from(document.querySelectorAll('[data-motion-parallax], [data-motion-zoom]'))
 
     if (reduceMotion) {
       revealTargets.forEach((target) => {
@@ -26,6 +26,7 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
 
       parallaxTargets.forEach((target) => {
         target.style.setProperty('--motion-parallax-y', '0px')
+        target.style.setProperty('--motion-zoom-scale', '1')
       })
 
       return undefined
@@ -56,6 +57,7 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
           } else {
             activeParallax.delete(entry.target)
             entry.target.style.setProperty('--motion-parallax-y', '0px')
+            entry.target.style.setProperty('--motion-zoom-scale', '1')
           }
         })
       },
@@ -71,7 +73,8 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
     })
 
     parallaxTargets.forEach((target) => {
-      target.classList.add('motion-parallax')
+      if (target.hasAttribute('data-motion-parallax')) target.classList.add('motion-parallax')
+      if (target.hasAttribute('data-motion-zoom')) target.classList.add('motion-zoom')
       parallaxObserver.observe(target)
     })
 
@@ -89,14 +92,22 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
           return
         }
 
-        const speed = clamp(Number.parseFloat(target.dataset.motionParallax || '0.8'), 0, 1)
         const rect = target.getBoundingClientRect()
         const targetCenter = rect.top + rect.height / 2
         const distanceFromCenter = (viewportHeight / 2 - targetCenter) / viewportHeight
-        const travel = (1 - speed) * 24
-        const y = clamp(distanceFromCenter * travel, -travel, travel)
 
-        target.style.setProperty('--motion-parallax-y', `${y.toFixed(2)}px`)
+        if (target.hasAttribute('data-motion-parallax')) {
+          const speed = clamp(Number.parseFloat(target.dataset.motionParallax || '0.8'), 0, 1)
+          const travel = (1 - speed) * 24
+          const y = clamp(distanceFromCenter * travel, -travel, travel)
+          target.style.setProperty('--motion-parallax-y', `${y.toFixed(2)}px`)
+        }
+
+        if (target.hasAttribute('data-motion-zoom')) {
+          const maxScale = Number.parseFloat(target.dataset.motionZoom || '1.05')
+          const scale = 1 + (maxScale - 1) * Math.max(0, 1 - Math.abs(distanceFromCenter) * 1.5)
+          target.style.setProperty('--motion-zoom-scale', `${scale.toFixed(3)}`)
+        }
       })
 
       if (header) {

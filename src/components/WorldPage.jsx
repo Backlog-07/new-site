@@ -89,7 +89,7 @@ function WorldContactItem({ item, index, onOpen }) {
       <span className="world-contact-sheet__index" aria-hidden="true">
         {String(index + 1).padStart(2, '0')}
       </span>
-      <img src={item.src} alt={item.alt || item.slide.title} />
+      <img src={item.src} alt={item.alt || item.slide.title} data-motion-zoom="1.08" />
     </button>
   )
 }

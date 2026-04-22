@@ -41,6 +41,7 @@ export function PlaceholderVideoSection() {
             className="placeholder-video-aw"
             data-motion-reveal
             data-motion-parallax="0.88"
+            style={{ color: '#ffffff', textShadow: '0 1px 4px rgba(0,0,0,0.4)', opacity: 1 }}
           >
             {video?.eyebrow || 'AW25'}
           </span>

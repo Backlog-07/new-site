@@ -221,7 +221,7 @@ export function ProductDetail({
             <div className="detail-actions" data-motion-reveal>
               <button
                 type="button"
-                className="detail-secondary-btn"
+                className="detail-secondary-btn motion-float"
                 onClick={() => onAddToCart(selectedSizeEntry).catch(() => {})}
                 disabled={!selectedSizeEntry?.available || !selectedSizeEntry?.merchandiseId || addingToCart}
               >
@@ -229,7 +229,7 @@ export function ProductDetail({
               </button>
               <button
                 type="button"
-                className="detail-primary-btn"
+                className="detail-primary-btn motion-float"
                 onClick={() => onBuyNow(selectedSizeEntry).catch(() => {})}
                 disabled={!selectedSizeEntry?.available || !selectedSizeEntry?.merchandiseId || buyingNow}
               >

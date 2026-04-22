@@ -14,8 +14,8 @@
 .placeholder-video-section {
   width: 100%;
   position: relative;
-  min-height: 100svh;
-  height: 100svh;
+  min-height: calc(100svh - var(--site-header-height, 60px));
+  height: calc(100svh - var(--site-header-height, 60px));
   overflow: hidden;
   border-bottom: 0;
   background:
@@ -124,12 +124,12 @@
   letter-spacing: 0.14em;
   font-family: var(--ui);
     font-size: 0.78rem;
-    color: rgba(17, 16, 16, 0.86);
+    color: white !important; mix-blend-mode: normal !important; z-index: 10 !important; opacity: 1 !important; text-shadow: 0 1px 4px rgba(0,0,0,0.4);
     z-index: 3;
   }
 
 .placeholder-video-section.is-fallback .placeholder-video-aw {
-  color: rgba(255, 255, 255, 0.82);
+  color: white !important; mix-blend-mode: normal !important; z-index: 10 !important; opacity: 1 !important; text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .placeholder-video-wordmark {
@@ -2532,7 +2532,7 @@
 }
 
 .placeholder-video-aw {
-  color: #f8f8f5;
+  color: white !important; mix-blend-mode: normal !important; z-index: 10 !important; opacity: 1 !important; text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .placeholder-video-wordmark {
@@ -2750,7 +2750,7 @@
 }
 
 .placeholder-video-aw {
-  color: rgba(236, 231, 223, 0.92);
+  color: white !important; mix-blend-mode: normal !important; z-index: 10 !important; opacity: 1 !important; text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .placeholder-video-wordmark {
@@ -2962,7 +2962,7 @@
 }
 
 .placeholder-video-aw {
-  color: rgba(17, 17, 17, 0.82);
+  color: white !important; mix-blend-mode: normal !important; z-index: 10 !important; opacity: 1 !important; text-shadow: 0 1px 4px rgba(0,0,0,0.4);
   letter-spacing: 0.18em;
 }
 
@@ -3305,9 +3305,9 @@
 
 .stack-section {
   position: sticky;
-  top: 0;
-  min-height: 100svh;
-  height: 100svh;
+  top: var(--site-header-height, 60px);
+  min-height: calc(100svh - var(--site-header-height, 60px));
+  height: calc(100svh - var(--site-header-height, 60px));
   z-index: calc(var(--stack-layer, 1) * 10);
   display: flex;
   align-items: stretch;
@@ -6626,7 +6626,7 @@ body {
 }
 
 .placeholder-video-aw {
-  color: rgba(17, 17, 17, 0.82) !important;
+  color: white !important; mix-blend-mode: normal !important; z-index: 10 !important; opacity: 1 !important; text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .product-showcase-card,
@@ -7475,4 +7475,79 @@ body {
     object-position: center center !important;
     transform: none !important;
   }
+}
+
+
+
+
+
+
+
+
+/* === Premium Animation Upgrades === */
+
+/* 1. Expanding Underline Links */
+.header-shop-link,
+.header-logo,
+.header-utilities a,
+.header-link-button,
+.header-bag-button,
+.footer-nav a,
+.footer-member-link {
+  position: relative;
+  text-decoration: none !important;
+}
+
+.header-shop-link::after,
+.header-logo::after,
+.header-utilities a::after,
+.header-link-button::after,
+.header-bag-button::after,
+.footer-nav a::after,
+.footer-member-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 380ms var(--motion-ease-premium);
+}
+
+.header-shop-link:hover::after,
+.header-logo:hover::after,
+.header-utilities a:hover::after,
+.header-link-button:hover::after,
+.header-bag-button:hover::after,
+.footer-nav a:hover::after,
+.footer-member-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* 2. Zoom-on-Scroll Imaging */
+.motion-zoom,
+[data-motion-zoom] {
+  transform: scale(var(--motion-zoom-scale, 1)) translate3d(0, calc(var(--motion-parallax-y, 0px) + var(--motion-reveal-y, 0px)), 0);
+  transition: transform 840ms var(--motion-ease-premium), opacity 840ms var(--motion-ease-premium), filter 840ms var(--motion-ease-premium);
+  will-change: transform, opacity, filter;
+  transform-origin: center center;
+}
+
+/* 3. Floating/Bobbing Call-to-Action Buttons */
+@keyframes float-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.motion-float {
+  animation: float-bob 4s var(--motion-ease-float) infinite;
+  display: inline-flex;
 }

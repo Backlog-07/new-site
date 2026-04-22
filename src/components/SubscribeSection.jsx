@@ -68,7 +68,7 @@ export function SubscribeSection() {
               onChange={(event) => setEmail(event.target.value)}
               disabled={status === 'loading'}
             />
-            <button type="submit" disabled={status === 'loading'}>
+            <button className="motion-float" type="submit" disabled={status === 'loading'}>
               {status === 'loading' ? 'SUBSCRIBING' : 'SUBSCRIBE'}
             </button>
             <p

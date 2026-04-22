@@ -84,6 +84,7 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
                 className="product-showcase-image"
                 src={product.image}
                 alt={product.title}
+                data-motion-zoom="1.08"
               />
             </div>
 
@@ -121,6 +122,7 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
               className="product-showcase-image"
               src={product.image}
               alt={product.title}
+              data-motion-zoom="1.08"
             />
           </div>
 
