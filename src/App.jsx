@@ -11,6 +11,7 @@ import { WorldPage } from './components/WorldPage.jsx'
 import { AboutPage } from './components/AboutPage.jsx'
 import { useShowcaseProducts } from './hooks/useShowcaseProducts.js'
 import { useShopifyCart } from './hooks/useShopifyCart.js'
+import { useLandingVideo } from './hooks/useLandingVideo.js'
 import { CartDrawer } from './components/CartDrawer.jsx'
 import { useWorldGallery } from './hooks/useWorldGallery.js'
 import { useCinematicMotion } from './hooks/useCinematicMotion.js'
@@ -73,6 +74,7 @@ function App() {
     error: worldError,
     contentType: worldContentType,
   } = useWorldGallery()
+  const { video: landingVideo } = useLandingVideo()
   const {
     cart,
     cartCount,
@@ -424,7 +426,7 @@ function App() {
                 onTouchEnd={handleStackTouchEnd}
                 onTouchCancel={handleStackTouchEnd}
               >
-                <PlaceholderVideoSection />
+                <PlaceholderVideoSection video={landingVideo} />
               </div>
               <div
                 className="stack-section stack-section--products"

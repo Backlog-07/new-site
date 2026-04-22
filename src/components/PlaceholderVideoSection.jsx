@@ -1,10 +1,23 @@
-import { useState } from 'react'
-import { useLandingVideo } from '../hooks/useLandingVideo.js'
+import { useEffect, useRef, useState } from 'react'
 
-export function PlaceholderVideoSection() {
-  const { video } = useLandingVideo()
+export function PlaceholderVideoSection({ video }) {
+  const videoRef = useRef(null)
   const [mediaError, setMediaError] = useState(false)
   const shouldShowFallback = mediaError || !video?.mediaSrc
+
+  useEffect(() => {
+    const nextVideo = videoRef.current
+    if (!nextVideo) {
+      return
+    }
+
+    const playPromise = nextVideo.play()
+    if (playPromise && typeof playPromise.then === 'function') {
+      playPromise.catch(() => {
+        // ignore autoplay interruptions
+      })
+    }
+  }, [video?.mediaSrc])
 
   return (
     <section
@@ -23,6 +36,7 @@ export function PlaceholderVideoSection() {
           />
         ) : !shouldShowFallback && video?.mediaKind === 'video' ? (
           <video
+            ref={videoRef}
             className="placeholder-video-media"
             src={video.mediaSrc}
             autoPlay
