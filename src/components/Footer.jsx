@@ -1,5 +1,3 @@
-const shopLinks = ['Women', 'Divided', 'Men', 'Kids', 'H&M Home', 'Unidays']
-
 const corporateLinks = [
   'Career at Backlog',
   'About Backlog',
@@ -69,7 +67,6 @@ export function Footer({ onAboutOpen }) {
   return (
     <footer className="site-footer" aria-label="Footer" data-motion-reveal>
       <div className="footer-panel">
-        <LinkColumn title="Shop" links={shopLinks} />
         <LinkColumn title="Corporate Info" links={corporateLinks} />
         <LinkColumn title="Help" links={helpLinks} />
 

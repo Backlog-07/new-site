@@ -421,6 +421,7 @@ function App() {
                 className="stack-section stack-section--hero"
                 style={{ '--stack-layer': 1, '--motion-delay': '0ms' }}
                 data-motion-reveal
+                data-motion-weight
                 onTouchStart={handleStackTouchStart}
                 onTouchMove={handleStackTouchMove}
                 onTouchEnd={handleStackTouchEnd}
@@ -432,6 +433,7 @@ function App() {
                 className="stack-section stack-section--products"
                 style={{ '--stack-layer': 2, '--motion-delay': '90ms' }}
                 data-motion-reveal
+                data-motion-weight
               >
                 <ProductShowcase
                   products={products}
@@ -444,6 +446,7 @@ function App() {
                 className="stack-section stack-section--services"
                 style={{ '--stack-layer': 4, '--motion-delay': '160ms' }}
                 data-motion-reveal
+                data-motion-weight
               >
                 <ServiceStrip />
               </div>
@@ -451,6 +454,7 @@ function App() {
                 className="stack-section stack-section--subscribe"
                 style={{ '--stack-layer': 5, '--motion-delay': '230ms' }}
                 data-motion-reveal
+                data-motion-weight
               >
                 <SubscribeSection />
               </div>
@@ -458,6 +462,7 @@ function App() {
                 className="stack-section stack-section--footer"
                 style={{ '--stack-layer': 6, '--motion-delay': '300ms' }}
                 data-motion-reveal
+                data-motion-weight
               >
                 <Footer onAboutOpen={handleAboutOpen} />
               </div>

@@ -14,6 +14,7 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
     const header = document.querySelector('.site-header')
     const revealTargets = Array.from(document.querySelectorAll('[data-motion-reveal]'))
     const parallaxTargets = Array.from(document.querySelectorAll('[data-motion-parallax], [data-motion-zoom]'))
+    const weightTargets = Array.from(document.querySelectorAll('[data-motion-weight]'))
 
     if (reduceMotion) {
       revealTargets.forEach((target) => {
@@ -27,6 +28,10 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
       parallaxTargets.forEach((target) => {
         target.style.setProperty('--motion-parallax-y', '0px')
         target.style.setProperty('--motion-zoom-scale', '1')
+      })
+
+      weightTargets.forEach((target) => {
+        target.style.setProperty('--motion-weight-y', '0px')
       })
 
       return undefined
@@ -67,6 +72,10 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
       },
     )
 
+    weightTargets.forEach((target) => {
+      target.classList.add('motion-weight')
+    })
+
     revealTargets.forEach((target) => {
       target.classList.add('motion-reveal')
       revealObserver.observe(target)
@@ -82,6 +91,7 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
     let headerHidden = false
     let ticking = false
     let rafId = 0
+    let currentWeight = 0
 
     const updateMotion = () => {
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1
@@ -114,17 +124,16 @@ export function useCinematicMotion({ enabled = true, scopeKey = 'default' } = {}
         const currentScrollY = window.scrollY
         const delta = currentScrollY - latestScrollY
 
-        if (currentScrollY <= 12) {
-          headerHidden = false
-        } else if (delta > 5) {
-          headerHidden = true
-        } else if (delta < -5) {
-          headerHidden = false
-        }
-
-        header.dataset.scrollHidden = headerHidden ? 'true' : 'false'
+        header.dataset.scrollHidden = 'false'
         latestScrollY = currentScrollY
+
+        const targetWeight = clamp(delta * 0.45, -24, 24)
+        currentWeight += (targetWeight - currentWeight) * 0.16
       }
+
+      weightTargets.forEach((target) => {
+        target.style.setProperty('--motion-weight-y', `${currentWeight.toFixed(2)}px`)
+      })
 
       ticking = false
     }
