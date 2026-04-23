@@ -30,13 +30,13 @@ export function PrimaryHeader({
       <a
         className="header-logo"
         href="#top"
-        aria-label="Backlog Store home"
+        aria-label="Backlog home"
         onClick={(event) => {
           event.preventDefault()
           onHomeOpen?.()
         }}
       >
-        Backlog Store
+        Backlog
       </a>
 
       <div className="header-utilities" aria-label="Account and search">

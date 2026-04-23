@@ -21,7 +21,7 @@ export function SecondaryHeader() {
       <div className="header-secondary-left">
         <BrandMark />
         <a className="header-secondary-brand" href="#top">
-          Backlog Store
+          Backlog
         </a>
       </div>
 

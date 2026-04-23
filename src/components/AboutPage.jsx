@@ -1,6 +1,6 @@
 export function AboutPage() {
   return (
-    <section className="about-page" aria-label="About Backlog Store" data-motion-reveal>
+    <section className="about-page" aria-label="About Backlog" data-motion-reveal>
       <div className="about-page__frame" data-motion-parallax="0.98">
         <div className="about-page__stack about-page__stack--desktop" aria-label="Store contact information">
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.84">CONTACT</p>
@@ -10,7 +10,7 @@ export function AboutPage() {
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.76">+91 836-995-0066</p>
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.74">ORDERS / PRESS / SUPPORT</p>
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.72">hello@backlogstore.com</p>
-          <p className="about-page__line" data-motion-reveal data-motion-parallax="0.7">BACKLOG STORE</p>
+          <p className="about-page__line" data-motion-reveal data-motion-parallax="0.7">BACKLOG</p>
         </div>
 
         <div className="about-page__mobile" aria-label="About mobile contact information">
