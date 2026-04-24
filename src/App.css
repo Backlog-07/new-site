@@ -3307,12 +3307,16 @@
   scroll-snap-type: y mandatory;
 }
 
+.storefront-main--simple {
+  scroll-snap-type: none;
+}
+
 .stack-section {
-  position: sticky;
-  top: var(--site-header-height, 60px);
-  min-height: calc(100svh - var(--site-header-height, 60px));
-  height: calc(100svh - var(--site-header-height, 60px));
-  z-index: calc(var(--stack-layer, 1) * 10);
+  position: relative;
+  top: auto;
+  min-height: auto;
+  height: auto;
+  z-index: auto;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
@@ -3336,6 +3340,78 @@
 .stack-section > * {
   width: 100%;
   min-height: 100%;
+}
+
+.home-scroll-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.home-scroll-page [data-motion-reveal],
+.home-scroll-page [data-motion-reveal].motion-reveal,
+.home-scroll-page [data-motion-parallax],
+.home-scroll-page [data-motion-zoom] {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.home-scroll-page .stack-section {
+  min-height: calc(100svh - var(--site-header-height, 60px));
+  padding: 0;
+}
+
+.home-scroll-page .stack-section + .stack-section {
+  border-top-width: 1px;
+}
+
+@keyframes home-fade-up {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.home-scroll-page .stack-section.home-scroll-animate h1,
+.home-scroll-page .stack-section.home-scroll-animate h2,
+.home-scroll-page .stack-section.home-scroll-animate h3,
+.home-scroll-page .stack-section.home-scroll-animate h4,
+.home-scroll-page .stack-section.home-scroll-animate p,
+.home-scroll-page .stack-section.home-scroll-animate li,
+.home-scroll-page .stack-section.home-scroll-animate button,
+.home-scroll-page .stack-section.home-scroll-animate a,
+.home-scroll-page .stack-section.home-scroll-animate .product-showcase-card,
+.home-scroll-page .stack-section.home-scroll-animate .service-card,
+.home-scroll-page .stack-section.home-scroll-animate .subscribe-section__panel,
+.home-scroll-page .stack-section.home-scroll-animate .footer-panel,
+.home-scroll-page .stack-section.home-scroll-animate .footer-mobile,
+.home-scroll-page .stack-section.home-scroll-animate .placeholder-video-overlay {
+  animation: home-fade-up 780ms var(--motion-ease-premium) both;
+}
+
+.home-scroll-page .stack-section.home-scroll-animate h1 {
+  animation-delay: 40ms;
+}
+
+.home-scroll-page .stack-section.home-scroll-animate h2 {
+  animation-delay: 80ms;
+}
+
+.home-scroll-page .stack-section.home-scroll-animate p,
+.home-scroll-page .stack-section.home-scroll-animate li {
+  animation-delay: 120ms;
+}
+
+.home-scroll-page .stack-section.home-scroll-animate .product-showcase-card,
+.home-scroll-page .stack-section.home-scroll-animate .service-card,
+.home-scroll-page .stack-section.home-scroll-animate .subscribe-section__panel {
+  animation-delay: 120ms;
 }
 
 .motion-reveal,

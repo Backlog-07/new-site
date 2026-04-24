@@ -16,6 +16,7 @@ import { useLandingVideo } from './hooks/useLandingVideo.js'
 import { CartDrawer } from './components/CartDrawer.jsx'
 import { useWorldGallery } from './hooks/useWorldGallery.js'
 import { useCinematicMotion } from './hooks/useCinematicMotion.js'
+import { useHomeScrollMotion } from './hooks/useHomeScrollMotion.js'
 import { getCachedProductByHandle, prefetchProductByHandle } from './data/showcaseProducts.js'
 
 function getPageFromPathname(pathname) {
@@ -114,8 +115,12 @@ function App() {
   const isHomeStack = displayRoute.page === 'home'
 
   useCinematicMotion({
-    enabled: !showIntro && displayRoute.page !== 'product',
+    enabled: !showIntro && displayRoute.page !== 'product' && displayRoute.page !== 'home',
     scopeKey: `${pageTransitionKey}:${showIntro ? 'intro' : 'ready'}`,
+  })
+
+  useHomeScrollMotion({
+    enabled: !showIntro && isHomeStack,
   })
 
   useLayoutEffect(() => {
@@ -476,14 +481,14 @@ function App() {
         onWorldOpen={handleWorldOpen}
         onAboutOpen={handleAboutOpen}
       />
-      <main className="storefront-main" aria-hidden={showIntro}>
+      <main className={`storefront-main${isHomeStack ? ' storefront-main--simple' : ''}`} aria-hidden={showIntro}>
         <div
           className={`page-transition page-transition--${pageTransitionPhase}`}
           key={pageTransitionKey}
           data-page-transition
         >
           {isHomeStack ? (
-            <div className="stacking-scene" aria-label="Homepage sections">
+            <div className="home-scroll-page" aria-label="Homepage sections">
               <div
                 className="stack-section stack-section--hero"
                 style={{ '--stack-layer': 1, '--motion-delay': '0ms' }}
