@@ -1,5 +1,5 @@
 import productImage from '../assets/BACKLOG (4).png'
-import { storefrontQuery } from '../lib/shopifyStorefront.js'
+import { hasShopifyStorefrontConfig, storefrontQuery } from '../lib/shopifyStorefront.js'
 
 const DEFAULT_SWATCHES = ['#171717', '#ded3c1', '#b31d28']
 const DEFAULT_NOTES = ['product details +', 'model wears +', 'sizing chart +']
@@ -21,6 +21,7 @@ const DEFAULT_SIZES = [
 export const localShowcaseProducts = [
   {
     id: 'lazy-eye-brown',
+    handle: 'lazy-eye-linen-shirt-in-brown',
     title: 'Lazy Eye Linen Shirt in Brown',
     price: 'INR 23,500.00',
     image: productImage,
@@ -48,6 +49,7 @@ export const localShowcaseProducts = [
   },
   {
     id: 'lazy-eye-white',
+    handle: 'lazy-eye-linen-shirt-in-white',
     title: 'Lazy Eye Linen Shirt in White',
     price: 'INR 23,500.00',
     image: productImage,
@@ -75,6 +77,7 @@ export const localShowcaseProducts = [
   },
   {
     id: 'badly-cut-white',
+    handle: 'badly-cut-shirt-in-white-unisex',
     title: 'Badly Cut Shirt in White [Unisex]',
     price: 'INR 18,000.00',
     image: productImage,
@@ -102,6 +105,7 @@ export const localShowcaseProducts = [
   },
   {
     id: 'dancing-man-blue',
+    handle: 'dancing-man-shacket-in-blue',
     title: 'Dancing Man Shacket in Blue',
     price: 'INR 37,000.00',
     image: productImage,
@@ -128,6 +132,8 @@ export const localShowcaseProducts = [
     availability: 'available now: duty free for US',
   },
 ]
+
+const productCache = new Map()
 
 const PRODUCTS_QUERY = `
   query FeaturedProducts($first: Int!) {
@@ -207,6 +213,10 @@ const PRODUCTS_QUERY = `
         options {
           name
           values
+        }
+        seo {
+          title
+          description
         }
       }
     }
@@ -331,6 +341,7 @@ function mapShopifyProduct(product, index) {
 
   return {
     id: product.id,
+    handle: product.handle,
     title,
     price,
     image,
@@ -347,6 +358,7 @@ function mapShopifyProduct(product, index) {
     colors: optionValues(product, 'Color').length ? optionValues(product, 'Color') : DEFAULT_SWATCHES,
     detailNotes: DEFAULT_NOTES,
     availability: product.availableForSale ? 'available now' : 'sold out',
+    seo: product.seo ?? null,
   }
 }
 
@@ -358,5 +370,161 @@ export async function fetchShowcaseProducts(limit = 4) {
     return []
   }
 
-  return nodes.map((node, index) => mapShopifyProduct(node, index))
+  const mappedProducts = nodes.map((node, index) => mapShopifyProduct(node, index))
+
+  mappedProducts.forEach((product) => {
+    if (product.handle) {
+      productCache.set(product.handle, product)
+    }
+  })
+
+  return mappedProducts
+}
+
+const PRODUCT_BY_HANDLE_QUERY = `
+  query ProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      id
+      title
+      handle
+      description
+      availableForSale
+      featuredImage {
+        url
+        altText
+      }
+      images(first: 12) {
+        nodes {
+          url
+          altText
+        }
+      }
+      detailsMetafield: metafield(namespace: "custom", key: "details") {
+        namespace
+        key
+        type
+        value
+      }
+      productDetailsMetafield: metafield(namespace: "custom", key: "product_details") {
+        namespace
+        key
+        type
+        value
+      }
+      careInstructionsMetafield: metafield(namespace: "custom", key: "care_instructions") {
+        namespace
+        key
+        type
+        value
+      }
+      careInstructionsLegacyMetafield: metafield(namespace: "custom", key: "careInstructions") {
+        namespace
+        key
+        type
+        value
+      }
+      washCareMetafield: metafield(namespace: "custom", key: "washcare") {
+        namespace
+        key
+        type
+        value
+      }
+      washCareLegacyMetafield: metafield(namespace: "custom", key: "wash_care") {
+        namespace
+        key
+        type
+        value
+      }
+      seo {
+        title
+        description
+      }
+      variants(first: 100) {
+        nodes {
+          id
+          title
+          availableForSale
+          selectedOptions {
+            name
+            value
+          }
+          image {
+            url
+            altText
+          }
+        }
+      }
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      options {
+        name
+        values
+      }
+    }
+  }
+`
+
+export async function fetchProductByHandle(handle) {
+  const normalizedHandle = String(handle || '').trim()
+
+  if (!normalizedHandle) {
+    return null
+  }
+
+  const cachedProduct = productCache.get(normalizedHandle)
+  if (cachedProduct) {
+    return cachedProduct
+  }
+
+  const localProduct = localShowcaseProducts.find((entry) => entry.handle === normalizedHandle) ?? null
+  if (!hasShopifyStorefrontConfig()) {
+    return localProduct
+  }
+
+  const data = await storefrontQuery(PRODUCT_BY_HANDLE_QUERY, {
+    handle: normalizedHandle,
+  })
+
+  const node = data?.product ?? null
+  if (!node) {
+    return null
+  }
+
+  return mapShopifyProduct(node, 0)
+}
+
+export function getCachedProductByHandle(handle) {
+  const normalizedHandle = String(handle || '').trim()
+  if (!normalizedHandle) {
+    return null
+  }
+
+  return productCache.get(normalizedHandle) ?? localShowcaseProducts.find((entry) => entry.handle === normalizedHandle) ?? null
+}
+
+export function primeProductCache(product) {
+  const handle = String(product?.handle || '').trim()
+  if (!handle) {
+    return
+  }
+
+  productCache.set(handle, product)
+}
+
+export async function prefetchProductByHandle(handle) {
+  const normalizedHandle = String(handle || '').trim()
+  if (!normalizedHandle || productCache.has(normalizedHandle)) {
+    return productCache.get(normalizedHandle) ?? null
+  }
+
+  const product = await fetchProductByHandle(normalizedHandle)
+  if (product) {
+    productCache.set(normalizedHandle, product)
+  }
+
+  return product
 }

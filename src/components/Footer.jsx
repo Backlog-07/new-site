@@ -63,9 +63,13 @@ function MobileLinkGroup({ title, links, className = '', onAboutOpen }) {
   )
 }
 
-export function Footer({ onAboutOpen }) {
+export function Footer({ onAboutOpen, staticReveal = false }) {
   return (
-    <footer className="site-footer" aria-label="Footer" data-motion-reveal>
+    <footer
+      className={`site-footer${staticReveal ? ' site-footer--static' : ''}`}
+      aria-label="Footer"
+      data-motion-reveal={staticReveal ? undefined : true}
+    >
       <div className="footer-panel">
         <LinkColumn title="Corporate Info" links={corporateLinks} />
         <LinkColumn title="Help" links={helpLinks} />

@@ -11,10 +11,12 @@ import { WorldPage } from './components/WorldPage.jsx'
 import { AboutPage } from './components/AboutPage.jsx'
 import { useShowcaseProducts } from './hooks/useShowcaseProducts.js'
 import { useShopifyCart } from './hooks/useShopifyCart.js'
+import { useShopifyProduct } from './hooks/useShopifyProduct.js'
 import { useLandingVideo } from './hooks/useLandingVideo.js'
 import { CartDrawer } from './components/CartDrawer.jsx'
 import { useWorldGallery } from './hooks/useWorldGallery.js'
 import { useCinematicMotion } from './hooks/useCinematicMotion.js'
+import { getCachedProductByHandle, prefetchProductByHandle } from './data/showcaseProducts.js'
 
 function getPageFromPathname(pathname) {
   if (pathname === '/world') {
@@ -25,14 +27,18 @@ function getPageFromPathname(pathname) {
     return 'about'
   }
 
-  if (pathname.startsWith('/product/')) {
+  if (pathname.startsWith('/products/') || pathname.startsWith('/product/')) {
     return 'product'
   }
 
   return 'home'
 }
 
-function getProductIdFromPathname(pathname) {
+function getProductHandleFromPathname(pathname) {
+  if (pathname.startsWith('/products/')) {
+    return decodeURIComponent(pathname.slice('/products/'.length).trim())
+  }
+
   if (!pathname.startsWith('/product/')) {
     return ''
   }
@@ -41,18 +47,20 @@ function getProductIdFromPathname(pathname) {
 }
 
 function App() {
+  const currentPathname = window.location.pathname
+  const skipIntro = currentPathname.startsWith('/products/') || currentPathname.startsWith('/product/')
   const [route, setRoute] = useState(() => ({
-    page: getPageFromPathname(window.location.pathname),
-    productId: getProductIdFromPathname(window.location.pathname),
+    page: getPageFromPathname(currentPathname),
+    productHandle: getProductHandleFromPathname(currentPathname),
   }))
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [isBuyingNow, setIsBuyingNow] = useState(false)
   const [introProgress, setIntroProgress] = useState(0)
-  const [showIntro, setShowIntro] = useState(true)
+  const [showIntro, setShowIntro] = useState(() => !skipIntro)
   const [introCurtainActive, setIntroCurtainActive] = useState(false)
   const [displayRoute, setDisplayRoute] = useState(() => ({
-    page: getPageFromPathname(window.location.pathname),
-    productId: getProductIdFromPathname(window.location.pathname),
+    page: getPageFromPathname(currentPathname),
+    productHandle: getProductHandleFromPathname(currentPathname),
   }))
   const [pageTransitionPhase, setPageTransitionPhase] = useState('entering')
   const [isTouchLayout, setIsTouchLayout] = useState(() =>
@@ -74,6 +82,16 @@ function App() {
     error: worldError,
     contentType: worldContentType,
   } = useWorldGallery()
+  const {
+    product: selectedProduct,
+    loading: productLoading,
+    error: productError,
+    notFound: productNotFound,
+  } = useShopifyProduct(displayRoute.page === 'product' ? displayRoute.productHandle : '')
+  const cachedProductPreview =
+    displayRoute.page === 'product'
+      ? getCachedProductByHandle(displayRoute.productHandle)
+      : null
   const { video: landingVideo } = useLandingVideo()
   const {
     cart,
@@ -87,20 +105,16 @@ function App() {
     addToCart,
     updateCartLineQuantity,
   } = useShopifyCart()
-  const selectedProduct =
-    displayRoute.page === 'product'
-      ? products.find((product) => product.id === displayRoute.productId) ?? null
-      : null
   const pageTransitionKey =
     displayRoute.page === 'home'
       ? 'home'
       : displayRoute.page === 'product'
-        ? `product-${displayRoute.productId || 'loading'}`
+        ? `product-${displayRoute.productHandle || 'loading'}`
         : displayRoute.page
   const isHomeStack = displayRoute.page === 'home'
 
   useCinematicMotion({
-    enabled: !showIntro,
+    enabled: !showIntro && displayRoute.page !== 'product',
     scopeKey: `${pageTransitionKey}:${showIntro ? 'intro' : 'ready'}`,
   })
 
@@ -114,14 +128,17 @@ function App() {
       left: 0,
       behavior: 'auto',
     })
-  }, [route.page, route.productId])
+  }, [route.page, route.productHandle])
 
   useEffect(() => {
     const handlePopState = () => {
-      setRoute({
+      const nextRoute = {
         page: getPageFromPathname(window.location.pathname),
-        productId: getProductIdFromPathname(window.location.pathname),
-      })
+        productHandle: getProductHandleFromPathname(window.location.pathname),
+      }
+
+      setRoute(nextRoute)
+      setDisplayRoute(nextRoute)
     }
 
     window.addEventListener('popstate', handlePopState)
@@ -160,8 +177,8 @@ function App() {
       return undefined
     }
 
-    const currentKey = `${displayRoute.page}:${displayRoute.productId}`
-    const nextKey = `${route.page}:${route.productId}`
+    const currentKey = `${displayRoute.page}:${displayRoute.productHandle}`
+    const nextKey = `${route.page}:${route.productHandle}`
 
     if (currentKey === nextKey) {
       return undefined
@@ -185,7 +202,7 @@ function App() {
       window.clearTimeout(pageTransitionTimers.current.exit)
       window.clearTimeout(pageTransitionTimers.current.enter)
     }
-  }, [route.page, route.productId, showIntro, displayRoute.page, displayRoute.productId])
+  }, [route.page, route.productHandle, showIntro, displayRoute.page, displayRoute.productHandle])
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1024px)')
@@ -223,6 +240,10 @@ function App() {
   }, [showIntro])
 
   useEffect(() => {
+    if (skipIntro) {
+      return undefined
+    }
+
     let active = true
     let hideTimer = null
     let curtainTimer = null
@@ -264,7 +285,7 @@ function App() {
         window.clearTimeout(hideTimer)
       }
     }
-  }, [])
+  }, [skipIntro])
 
   async function handleAddToCart(sizeEntry) {
     if (!selectedProduct || !sizeEntry) {
@@ -311,23 +332,37 @@ function App() {
   }
 
   function handleWorldOpen() {
-    setRoute({ page: 'world', productId: '' })
+    const nextRoute = { page: 'world', productHandle: '' }
+    setRoute(nextRoute)
+    setDisplayRoute(nextRoute)
     window.history.pushState({}, '', '/world')
   }
 
   function handleHomeOpen() {
-    setRoute({ page: 'home', productId: '' })
+    const nextRoute = { page: 'home', productHandle: '' }
+    setRoute(nextRoute)
+    setDisplayRoute(nextRoute)
     window.history.pushState({}, '', '/')
   }
 
   function handleAboutOpen() {
-    setRoute({ page: 'about', productId: '' })
+    const nextRoute = { page: 'about', productHandle: '' }
+    setRoute(nextRoute)
+    setDisplayRoute(nextRoute)
     window.history.pushState({}, '', '/about')
   }
 
   function handleProductOpen(product) {
-    setRoute({ page: 'product', productId: product.id })
-    window.history.pushState({}, '', `/product/${encodeURIComponent(product.id)}`)
+    const nextHandle = product.handle || product.id
+    const nextRoute = { page: 'product', productHandle: nextHandle }
+    setRoute(nextRoute)
+    setDisplayRoute(nextRoute)
+    window.history.pushState({}, '', `/products/${encodeURIComponent(nextHandle)}`)
+  }
+
+  function handleProductPrefetch(product) {
+    const nextHandle = product.handle || product.id
+    prefetchProductByHandle(nextHandle).catch(() => {})
   }
 
   function handleStackTouchStart(event) {
@@ -372,6 +407,38 @@ function App() {
   function handleStackTouchEnd() {
     touchSceneState.current.active = false
   }
+
+  useEffect(() => {
+    if (displayRoute.page !== 'product') {
+      document.title = 'Backlog'
+      return undefined
+    }
+
+    if (selectedProduct?.seo?.title) {
+      document.title = `${selectedProduct.seo.title} | Backlog`
+    } else if (selectedProduct?.title) {
+      document.title = `${selectedProduct.title} | Backlog`
+    } else if (productLoading) {
+      document.title = 'Loading product | Backlog'
+    } else {
+      document.title = 'Product | Backlog'
+    }
+
+    const description =
+      selectedProduct?.seo?.description ||
+      selectedProduct?.description ||
+      'Shop backlog products directly from the storefront.'
+
+    let metaDescription = document.querySelector('meta[name="description"]')
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta')
+      metaDescription.setAttribute('name', 'description')
+      document.head.appendChild(metaDescription)
+    }
+    metaDescription.setAttribute('content', description)
+
+    return undefined
+  }, [displayRoute.page, displayRoute.productHandle, productLoading, selectedProduct])
 
   return (
     <section className={`storefront ${showIntro ? 'storefront--intro-active' : ''}`}>
@@ -440,6 +507,7 @@ function App() {
                   loading={loading}
                   error={error}
                   onSelect={handleProductOpen}
+                  onPrefetch={handleProductPrefetch}
                 />
               </div>
               <div
@@ -477,23 +545,60 @@ function App() {
           ) : displayRoute.page === 'about' ? (
             <AboutPage />
           ) : displayRoute.page === 'product' ? (
-            selectedProduct ? (
+            selectedProduct || cachedProductPreview ? (
               <ProductDetail
-                key={selectedProduct.id}
-                product={selectedProduct}
+                key={(selectedProduct || cachedProductPreview).handle || (selectedProduct || cachedProductPreview).id}
+                product={selectedProduct || cachedProductPreview}
                 onAddToCart={handleAddToCart}
                 onBuyNow={handleBuyNow}
                 addingToCart={isAddingToCart}
                 buyingNow={isBuyingNow}
                 onBack={handleHomeOpen}
               />
-            ) : (
+            ) : productError ? (
               <div className="product-detail-page product-detail-page--loading">
-                <div className="product-detail-loading">
-                  <p>{loading ? 'Loading product...' : 'Product not found.'}</p>
-                  <button type="button" className="product-detail-loading-back" onClick={handleHomeOpen}>
+                <div className="product-detail-loading" role="alert">
+                  <p>We could not load this product.</p>
+                  <p className="product-detail-loading__message">
+                    {productError.message || 'Please check the Shopify storefront settings and try again.'}
+                  </p>
+                  <button
+                    type="button"
+                    className="product-detail-loading-back"
+                    onClick={handleHomeOpen}
+                  >
                     Back to home
                   </button>
+                </div>
+              </div>
+            ) : productNotFound ? (
+              <div className="product-detail-page product-detail-page--loading">
+                <div className="product-detail-loading" role="alert">
+                  <p>Product not found.</p>
+                  <p className="product-detail-loading__message">
+                    The handle "{displayRoute.productHandle}" does not exist in Shopify.
+                  </p>
+                  <button
+                    type="button"
+                    className="product-detail-loading-back"
+                    onClick={handleHomeOpen}
+                  >
+                    Back to home
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="product-detail-page product-detail-page--loading">
+                <div className="product-detail-loading" role="status" aria-live="polite">
+                  <p>Loading product...</p>
+                  <p className="product-detail-loading__message">
+                    {displayRoute.productHandle ? `Fetching ${displayRoute.productHandle} from Shopify...` : 'Preparing product page...'}
+                  </p>
+                  <div className="product-detail-loading__skeleton" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
                 </div>
               </div>
             )
@@ -501,7 +606,7 @@ function App() {
         </div>
       </main>
       {!isHomeStack ? (
-        <Footer onAboutOpen={handleAboutOpen} />
+        <Footer onAboutOpen={handleAboutOpen} staticReveal={displayRoute.page === 'product'} />
       ) : null}
       <CartDrawer
         cart={cart}

@@ -37,7 +37,7 @@ function CartGlyph() {
   )
 }
 
-export function ProductShowcase({ products, loading, error, onSelect }) {
+export function ProductShowcase({ products, loading, error, onSelect, onPrefetch }) {
   if (loading && products.length === 0) {
     return (
       <section className="product-showcase product-showcase--loading" aria-label="Featured products" data-motion-reveal>
@@ -73,12 +73,15 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
           <div className="product-showcase-sketch-label">
             <p data-motion-reveal data-motion-parallax="0.86">Products</p>
           </div>
-          <button
-            type="button"
-            className={`product-showcase-card product-showcase-card--sketch ${product.variant}`}
-            onClick={() => onSelect(product)}
-            aria-label={`Open ${product.title}`}
-          >
+        <button
+          type="button"
+          className={`product-showcase-card product-showcase-card--sketch ${product.variant}`}
+          onClick={() => onSelect(product)}
+          onMouseEnter={() => onPrefetch?.(product)}
+          onFocus={() => onPrefetch?.(product)}
+          onTouchStart={() => onPrefetch?.(product)}
+          aria-label={`Open ${product.title}`}
+        >
             <div className="product-image-stage product-image-stage--sketch" data-motion-reveal>
               <img
                 className="product-showcase-image"
@@ -115,6 +118,9 @@ export function ProductShowcase({ products, loading, error, onSelect }) {
           className={`product-showcase-card ${product.variant}`}
           key={product.title}
           onClick={() => onSelect(product)}
+          onMouseEnter={() => onPrefetch?.(product)}
+          onFocus={() => onPrefetch?.(product)}
+          onTouchStart={() => onPrefetch?.(product)}
           aria-label={`Open ${product.title}`}
         >
           <div className="product-image-stage product-image-stage--grid" data-motion-reveal>
