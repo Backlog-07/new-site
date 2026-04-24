@@ -1744,7 +1744,7 @@
   width: 100%;
   padding: 18px 16px 18px;
   border-top: 1px solid #efefef;
-  background: var(--site-surface);
+  background: var(--site-bg);
   font-family: var(--ui);
   text-transform: lowercase;
   letter-spacing: 0.04em;
@@ -7307,7 +7307,7 @@ body {
   /* ── Minimalist mobile footer ── */
   .site-footer {
     padding: 16px 10px 34px !important;
-    background: linear-gradient(180deg, #f7f4ef 0%, #f2ede6 100%) !important;
+    background: var(--site-bg, #f7f4ef) !important;
   }
 
   .footer-panel {
@@ -7384,6 +7384,7 @@ body {
     flex: 1;
     margin: 0 auto;
     box-sizing: border-box;
+    background: inherit;
   }
 
   .footer-mobile__wordmark {

@@ -17,6 +17,7 @@ import { CartDrawer } from './components/CartDrawer.jsx'
 import { useWorldGallery } from './hooks/useWorldGallery.js'
 import { useCinematicMotion } from './hooks/useCinematicMotion.js'
 import { useHomeScrollMotion } from './hooks/useHomeScrollMotion.js'
+import { scrollToTopImmediate, useLenisSmoothScroll } from './hooks/useLenisSmoothScroll.js'
 import { getCachedProductByHandle, prefetchProductByHandle } from './data/showcaseProducts.js'
 
 function getPageFromPathname(pathname) {
@@ -114,6 +115,10 @@ function App() {
         : displayRoute.page
   const isHomeStack = displayRoute.page === 'home'
 
+  useLenisSmoothScroll({
+    enabled: !showIntro,
+  })
+
   useCinematicMotion({
     enabled: !showIntro && displayRoute.page !== 'product' && displayRoute.page !== 'home',
     scopeKey: `${pageTransitionKey}:${showIntro ? 'intro' : 'ready'}`,
@@ -128,11 +133,7 @@ function App() {
       return
     }
 
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'auto',
-    })
+    scrollToTopImmediate()
   }, [route.page, route.productHandle])
 
   useEffect(() => {
