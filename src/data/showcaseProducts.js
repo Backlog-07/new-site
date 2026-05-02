@@ -1,4 +1,5 @@
 import productImage from '../assets/BACKLOG (4).png'
+import hoverImage from '../assets/hero.png'
 import { hasShopifyStorefrontConfig, storefrontQuery } from '../lib/shopifyStorefront.js'
 
 const DEFAULT_SWATCHES = ['#171717', '#ded3c1', '#b31d28']
@@ -24,9 +25,14 @@ export const localShowcaseProducts = [
     handle: 'lazy-eye-linen-shirt-in-brown',
     title: 'Lazy Eye Linen Shirt in Brown',
     price: 'INR 23,500.00',
+    availableForSale: true,
+    totalInventory: 12,
     image: productImage,
-    imageUrls: [productImage],
-    gallery: [{ src: productImage, alt: 'Lazy Eye Linen Shirt in Brown' }],
+    imageUrls: [productImage, hoverImage],
+    gallery: [
+      { src: productImage, alt: 'Lazy Eye Linen Shirt in Brown' },
+      { src: hoverImage, alt: 'Lazy Eye Linen Shirt in Brown on model' },
+    ],
     variant: 'variant-a',
     breadcrumb: 'entire studios / lazy eye linen shirt in brown',
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
@@ -44,6 +50,7 @@ export const localShowcaseProducts = [
       { label: 'XXL', available: false, merchandiseId: null },
     ],
     colors: ['#171717', '#ded3c1', '#b31d28'],
+    colorLabel: 'brown',
     detailNotes: ['product details +', 'model wears +', 'sizing chart +'],
     availability: 'available exclusively in the US',
   },
@@ -52,9 +59,14 @@ export const localShowcaseProducts = [
     handle: 'lazy-eye-linen-shirt-in-white',
     title: 'Lazy Eye Linen Shirt in White',
     price: 'INR 23,500.00',
+    availableForSale: true,
+    totalInventory: 12,
     image: productImage,
-    imageUrls: [productImage],
-    gallery: [{ src: productImage, alt: 'Lazy Eye Linen Shirt in White' }],
+    imageUrls: [productImage, hoverImage],
+    gallery: [
+      { src: productImage, alt: 'Lazy Eye Linen Shirt in White' },
+      { src: hoverImage, alt: 'Lazy Eye Linen Shirt in White on model' },
+    ],
     variant: 'variant-b',
     breadcrumb: 'entire studios / lazy eye linen shirt in white',
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
@@ -72,6 +84,7 @@ export const localShowcaseProducts = [
       { label: 'XXL', available: false, merchandiseId: null },
     ],
     colors: ['#171717', '#ded3c1', '#b31d28'],
+    colorLabel: 'white',
     detailNotes: ['product details +', 'model wears +', 'sizing chart +'],
     availability: 'available exclusively in the US',
   },
@@ -80,9 +93,14 @@ export const localShowcaseProducts = [
     handle: 'badly-cut-shirt-in-white-unisex',
     title: 'Badly Cut Shirt in White [Unisex]',
     price: 'INR 18,000.00',
+    availableForSale: true,
+    totalInventory: 8,
     image: productImage,
-    imageUrls: [productImage],
-    gallery: [{ src: productImage, alt: 'Badly Cut Shirt in White [Unisex]' }],
+    imageUrls: [productImage, hoverImage],
+    gallery: [
+      { src: productImage, alt: 'Badly Cut Shirt in White [Unisex]' },
+      { src: hoverImage, alt: 'Badly Cut Shirt in White [Unisex] on model' },
+    ],
     variant: 'variant-c',
     breadcrumb: 'entire studios / badly cut shirt in white',
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
@@ -100,6 +118,7 @@ export const localShowcaseProducts = [
       { label: 'XXL', available: false, merchandiseId: null },
     ],
     colors: ['#171717', '#ded3c1', '#b31d28'],
+    colorLabel: 'white',
     detailNotes: ['product details +', 'model wears +', 'sizing chart +'],
     availability: 'available now: duty free for US',
   },
@@ -108,9 +127,14 @@ export const localShowcaseProducts = [
     handle: 'dancing-man-shacket-in-blue',
     title: 'Dancing Man Shacket in Blue',
     price: 'INR 37,000.00',
+    availableForSale: true,
+    totalInventory: 6,
     image: productImage,
-    imageUrls: [productImage],
-    gallery: [{ src: productImage, alt: 'Dancing Man Shacket in Blue' }],
+    imageUrls: [productImage, hoverImage],
+    gallery: [
+      { src: productImage, alt: 'Dancing Man Shacket in Blue' },
+      { src: hoverImage, alt: 'Dancing Man Shacket in Blue on model' },
+    ],
     variant: 'variant-d',
     breadcrumb: 'entire studios / dancing man shacket in blue',
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
@@ -128,6 +152,7 @@ export const localShowcaseProducts = [
       { label: 'XXL', available: false, merchandiseId: null },
     ],
     colors: ['#171717', '#ded3c1', '#b31d28'],
+    colorLabel: 'blue',
     detailNotes: ['product details +', 'model wears +', 'sizing chart +'],
     availability: 'available now: duty free for US',
   },
@@ -144,6 +169,7 @@ const PRODUCTS_QUERY = `
         handle
         description
         availableForSale
+        totalInventory
         featuredImage {
           url
           altText
@@ -194,6 +220,7 @@ const PRODUCTS_QUERY = `
           nodes {
             id
             availableForSale
+            quantityAvailable
             selectedOptions {
               name
               value
@@ -304,8 +331,23 @@ function sizeAvailabilityMap(product) {
       available: variant?.availableForSale ?? true,
       merchandiseId: variant?.id ?? null,
       image: variant?.image?.url ?? null,
+      quantityAvailable: Number(variant?.quantityAvailable ?? 0),
     }
   })
+}
+
+function resolveInventoryTotal(product) {
+  const directTotal = Number(product?.totalInventory ?? 0)
+  if (Number.isFinite(directTotal) && directTotal > 0) {
+    return directTotal
+  }
+
+  const variantTotal = (product?.variants?.nodes ?? []).reduce(
+    (sum, variant) => sum + Number(variant?.quantityAvailable ?? 0),
+    0,
+  )
+
+  return Number.isFinite(variantTotal) ? variantTotal : 0
 }
 
 function mapShopifyProduct(product, index) {
@@ -344,6 +386,8 @@ function mapShopifyProduct(product, index) {
     handle: product.handle,
     title,
     price,
+    availableForSale: product.availableForSale !== false,
+    totalInventory: resolveInventoryTotal(product),
     image,
     imageUrls: normalizedGallery.map((item) => item.src),
     gallery: normalizedGallery,
@@ -351,6 +395,7 @@ function mapShopifyProduct(product, index) {
     breadcrumb: `entire studios / ${product.handle || title.toLowerCase()}`,
     brandLine: 'ADIDAS X ENTIRE STUDIOS',
     shortName: title.toUpperCase(),
+    colorLabel: optionValues(product, 'Color')[0] || '',
     description: productDescription,
     details: detailsText,
     careInstructions,
@@ -389,6 +434,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       handle
       description
       availableForSale
+      totalInventory
       featuredImage {
         url
         altText
@@ -444,6 +490,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
           id
           title
           availableForSale
+          quantityAvailable
           selectedOptions {
             name
             value

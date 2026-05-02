@@ -4,6 +4,7 @@ export function PrimaryHeader({
   cartCount = 0,
   onCartOpen,
   onHomeOpen,
+  onShopOpen,
   onWorldOpen,
   onAboutOpen,
 }) {
@@ -21,7 +22,7 @@ export function PrimaryHeader({
         href="#collection"
         onClick={(event) => {
           event.preventDefault()
-          onHomeOpen?.()
+          onShopOpen?.()
         }}
       >
         shop
@@ -75,7 +76,7 @@ export function PrimaryHeader({
         onClick={(event) => {
           event.preventDefault()
           closeMobileMenu()
-          onHomeOpen?.()
+          onShopOpen?.()
         }}
       >
         shop

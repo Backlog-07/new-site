@@ -4,6 +4,7 @@ export function Header({
   cartCount = 0,
   onCartOpen,
   onHomeOpen,
+  onShopOpen,
   onWorldOpen,
   onAboutOpen,
 }) {
@@ -14,6 +15,7 @@ export function Header({
           cartCount={cartCount}
           onCartOpen={onCartOpen}
           onHomeOpen={onHomeOpen}
+          onShopOpen={onShopOpen}
           onWorldOpen={onWorldOpen}
           onAboutOpen={onAboutOpen}
         />

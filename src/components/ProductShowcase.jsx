@@ -15,7 +15,7 @@ function ProductCardSkeleton({ className }) {
 function SwatchRow({ colors = [] }) {
   return (
     <div className="product-grid-swatches" aria-label="Product colors">
-      {colors.slice(0, 4).map((color) => (
+      {(colors.length > 0 ? [colors[0]] : []).map((color) => (
         <span
           key={color}
           className="product-grid-swatch"
@@ -37,13 +37,63 @@ function CartGlyph() {
   )
 }
 
-export function ProductShowcase({ products, loading, error, onSelect, onPrefetch }) {
+function BookmarkGlyph() {
+  return (
+    <span className="product-showcase-bookmark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+        <path d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1z" />
+      </svg>
+    </span>
+  )
+}
+
+function getStatusLabel(product, index) {
+  if (product?.availability && product.availability.toLowerCase().includes('sold out')) {
+    return 'sold out'
+  }
+
+  return index === 2 ? 'restocked' : 'new:in'
+}
+
+function getColorLabel(product) {
+  return String(product?.colorLabel || '').trim()
+}
+
+function getHoverImage(product) {
+  return product?.gallery?.[1]?.src || product?.image || ''
+}
+
+function getHoverImageAlt(product) {
+  return product?.gallery?.[1]?.alt || product?.title || ''
+}
+
+function isLockedProduct(product) {
+  const totalInventory = Number(product?.totalInventory ?? 0)
+
+  return totalInventory <= 0
+}
+
+function getProductPriceLabel(product) {
+  return isLockedProduct(product) ? 'Coming Soon' : product.price
+}
+
+export function ProductShowcase({
+  products,
+  loading,
+  error,
+  onSelect,
+  onPrefetch,
+  onBrowseAll,
+  showCta = true,
+}) {
   if (loading && products.length === 0) {
     return (
       <section className="product-showcase product-showcase--loading" aria-label="Featured products" data-motion-reveal>
-        {['variant-a', 'variant-b', 'variant-c', 'variant-d'].map((variant) => (
-          <ProductCardSkeleton key={variant} className={variant} />
-        ))}
+        <div className="product-showcase-grid">
+          {['variant-a', 'variant-b', 'variant-c', 'variant-d'].map((variant, index) => (
+            <ProductCardSkeleton key={`${variant}-${index}`} className={variant} />
+          ))}
+        </div>
       </section>
     )
   }
@@ -66,42 +116,69 @@ export function ProductShowcase({ products, loading, error, onSelect, onPrefetch
 
   if (products.length === 1) {
     const product = products[0]
+    const locked = isLockedProduct(product)
+    const hoverImage = getHoverImage(product)
+    const hoverImageAlt = getHoverImageAlt(product)
 
     return (
       <section className="product-showcase product-showcase--sketch" aria-label="Featured products" data-motion-reveal>
         <div className="product-showcase-sketch-shell">
-          <div className="product-showcase-sketch-label">
-            <p data-motion-reveal data-motion-parallax="0.86">Products</p>
-          </div>
-        <button
-          type="button"
-          className={`product-showcase-card product-showcase-card--sketch ${product.variant}`}
-          onClick={() => onSelect(product)}
-          onMouseEnter={() => onPrefetch?.(product)}
-          onFocus={() => onPrefetch?.(product)}
-          onTouchStart={() => onPrefetch?.(product)}
-          aria-label={`Open ${product.title}`}
-        >
-            <div className="product-image-stage product-image-stage--sketch" data-motion-reveal>
-              <img
-                className="product-showcase-image"
-                src={product.image}
-                alt={product.title}
-                data-motion-zoom="1.08"
-              />
-            </div>
+          <div className="product-showcase-grid">
+            <button
+              type="button"
+              className={`product-showcase-card product-showcase-card--sketch ${product.variant}${locked ? ' product-showcase-card--locked' : ''}`}
+              onClick={locked ? undefined : () => onSelect(product)}
+              onMouseEnter={locked ? undefined : () => onPrefetch?.(product)}
+              onFocus={locked ? undefined : () => onPrefetch?.(product)}
+              onTouchStart={locked ? undefined : () => onPrefetch?.(product)}
+              disabled={locked}
+              aria-label={locked ? `${product.title} coming soon` : `Open ${product.title}`}
+              aria-disabled={locked}
+            >
+              <div className="product-image-stage product-image-stage--sketch" data-motion-reveal>
+                <img
+                  className="product-showcase-image"
+                  src={product.image}
+                  alt={product.title}
+                  data-motion-zoom="1.08"
+                />
+                {hoverImage && hoverImage !== product.image ? (
+                  <img
+                    className="product-showcase-image product-showcase-image--hover"
+                    src={hoverImage}
+                    alt={hoverImageAlt}
+                    aria-hidden="true"
+                    data-motion-zoom="1.08"
+                  />
+                ) : null}
+              </div>
 
-            <div className="product-grid-meta product-grid-meta--sketch" data-motion-reveal>
-              <div className="product-grid-title-row">
-                <h2>{product.title}</h2>
-                <CartGlyph />
-              </div>
-              <p className="product-grid-price">{product.price}</p>
+              <div className="product-grid-meta product-grid-meta--sketch" data-motion-reveal>
+                <div className="product-grid-title-row">
+                  <div className="product-grid-title-copy">
+                    <h2>{product.title}</h2>
+                    {getColorLabel(product) ? <span className="product-grid-color">{getColorLabel(product)}</span> : null}
+                  </div>
+                  <p className={`product-grid-price${locked ? ' product-grid-price--locked' : ''}`}>
+                    {getProductPriceLabel(product)}
+                  </p>
+                </div>
               <div className="product-grid-footer">
-                <SwatchRow colors={product.colors} />
+                  <SwatchRow colors={product.colors} />
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
+          </div>
+          {showCta ? (
+            <button
+              type="button"
+              className="product-showcase-cta"
+              onClick={() => onBrowseAll?.()}
+              aria-label="Shop now"
+            >
+              shop now
+            </button>
+          ) : null}
         </div>
       </section>
     )
@@ -109,42 +186,73 @@ export function ProductShowcase({ products, loading, error, onSelect, onPrefetch
 
   return (
     <section className="product-showcase" aria-label="Featured products" data-motion-reveal data-motion-parallax="0.98">
-      <div className="product-showcase-grid-label">
-        <p data-motion-reveal data-motion-parallax="0.86">Products</p>
+      <div className="product-showcase-grid">
+        {products.map((product, index) => (
+          (() => {
+            const locked = isLockedProduct(product)
+            const hoverImage = getHoverImage(product)
+            const hoverImageAlt = getHoverImageAlt(product)
+
+            return (
+          <button
+            type="button"
+            className={`product-showcase-card ${product.variant}${locked ? ' product-showcase-card--locked' : ''}`}
+            key={product.title}
+            onClick={locked ? undefined : () => onSelect(product)}
+            onMouseEnter={locked ? undefined : () => onPrefetch?.(product)}
+            onFocus={locked ? undefined : () => onPrefetch?.(product)}
+            onTouchStart={locked ? undefined : () => onPrefetch?.(product)}
+            disabled={locked}
+            aria-label={locked ? `${product.title} coming soon` : `Open ${product.title}`}
+            aria-disabled={locked}
+          >
+            <div className="product-image-stage product-image-stage--grid" data-motion-reveal>
+              <img
+                className="product-showcase-image"
+                src={product.image}
+                alt={product.title}
+                data-motion-zoom="1.08"
+              />
+              {hoverImage && hoverImage !== product.image ? (
+                <img
+                  className="product-showcase-image product-showcase-image--hover"
+                  src={hoverImage}
+                  alt={hoverImageAlt}
+                  aria-hidden="true"
+                  data-motion-zoom="1.08"
+                />
+              ) : null}
+            </div>
+
+            <div className="product-grid-meta" data-motion-reveal>
+              <div className="product-grid-title-row">
+                <div className="product-grid-title-copy">
+                  <h2>{product.title}</h2>
+                  {getColorLabel(product) ? <span className="product-grid-color">{getColorLabel(product)}</span> : null}
+                </div>
+                <p className={`product-grid-price${locked ? ' product-grid-price--locked' : ''}`}>
+                  {getProductPriceLabel(product)}
+                </p>
+              </div>
+              <div className="product-grid-footer">
+                <SwatchRow colors={product.colors} />
+              </div>
+            </div>
+          </button>
+            )
+          })()
+        ))}
       </div>
-      {products.map((product, index) => (
+      {showCta ? (
         <button
           type="button"
-          className={`product-showcase-card ${product.variant}`}
-          key={product.title}
-          onClick={() => onSelect(product)}
-          onMouseEnter={() => onPrefetch?.(product)}
-          onFocus={() => onPrefetch?.(product)}
-          onTouchStart={() => onPrefetch?.(product)}
-          aria-label={`Open ${product.title}`}
+          className="product-showcase-cta"
+          onClick={() => onBrowseAll?.()}
+          aria-label="Shop now"
         >
-          <div className="product-image-stage product-image-stage--grid" data-motion-reveal>
-            <img
-              className="product-showcase-image"
-              src={product.image}
-              alt={product.title}
-              data-motion-zoom="1.08"
-            />
-          </div>
-
-          <div className="product-grid-meta" data-motion-reveal>
-            <div className="product-grid-title-row">
-              <h2>{product.title}</h2>
-              <CartGlyph />
-            </div>
-            <p className="product-grid-price">{product.price}</p>
-            <div className="product-grid-footer">
-              <SwatchRow colors={product.colors} />
-              <span className="product-grid-note">tap to open</span>
-            </div>
-          </div>
+          shop now
         </button>
-      ))}
+      ) : null}
     </section>
   )
 }

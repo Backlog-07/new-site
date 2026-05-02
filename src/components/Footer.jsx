@@ -1,30 +1,47 @@
-const corporateLinks = [
-  'Career at Backlog',
-  'About Backlog',
-  'Sustainability',
-  'Press',
-  'Investor Relations',
-  'Corporate Governance',
+const quickLinks = [
+  { label: 'Shop', href: '/products' },
+  { label: 'Topwear', href: '/products' },
+  { label: 'Bottomwear', href: '/products' },
 ]
 
-const helpLinks = [
-  'Customer Service',
-  'My Account',
-  'Find a Store',
-  'Legal & Privacy',
-  'Contact',
-  'Gift Card',
-  'CA Supply Chains Act',
+const infoLinks = [
+  { label: 'Contact Us', href: '/about' },
 ]
 
-function LinkColumn({ title, links }) {
+const legalLinks = [
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms of Service', href: '/terms-of-service' },
+  { label: 'Shipping Policy', href: '/shipping-policy' },
+  { label: 'Refund Policy', href: '/refund-policy' },
+]
+
+const socialLinks = [{ label: 'Instagram', href: 'https://www.instagram.com/backlog.in/', external: true }]
+const brandLoop = Array.from({ length: 8 }, () => 'BACKLOG')
+
+function LinkColumn({ title, links, onNavigate, onExternalNavigate }) {
   return (
     <section className="footer-column">
       <h2>{title}</h2>
       <ul>
         {links.map((link) => (
-          <li key={link}>
-            <a href="#top">{link}</a>
+          <li key={link.label}>
+            <a
+              href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noreferrer noopener' : undefined}
+              onClick={(event) => {
+                if (link.external) {
+                  event.preventDefault()
+                  onExternalNavigate?.(link.href)
+                  return
+                }
+
+                event.preventDefault()
+                onNavigate?.(link.href)
+              }}
+            >
+              {link.label}
+            </a>
           </li>
         ))}
       </ul>
@@ -32,86 +49,38 @@ function LinkColumn({ title, links }) {
   )
 }
 
-function MobileLinkGroup({ title, links, className = '', onAboutOpen }) {
-  const visibleLinks = title === 'About Us' ? links.slice(0, 1) : links
-
-  return (
-    <section className={`footer-mobile__col ${className}`.trim()}>
-      <h2 className="footer-mobile__col-title">{title}</h2>
-      <ul className="footer-mobile__list">
-        {visibleLinks.map((link) => {
-          const isAboutLink = link === 'About Us'
-
-          return (
-            <li key={link}>
-              {isAboutLink ? (
-                <button
-                  type="button"
-                  className="footer-mobile__link-button"
-                  onClick={onAboutOpen}
-                >
-                  {link}
-                </button>
-              ) : (
-                <a href="#top">{link}</a>
-              )}
-            </li>
-          )
-        })}
-      </ul>
-    </section>
-  )
-}
-
-export function Footer({ onAboutOpen, staticReveal = false }) {
+export function Footer({ forceVisible = false, onNavigate, onExternalNavigate } = {}) {
   return (
     <footer
-      className={`site-footer${staticReveal ? ' site-footer--static' : ''}`}
+      className={`site-footer${forceVisible ? ' is-visible' : ''}`}
       aria-label="Footer"
-      data-motion-reveal={staticReveal ? undefined : true}
+      data-motion-reveal
     >
       <div className="footer-panel">
-        <LinkColumn title="Corporate Info" links={corporateLinks} />
-        <LinkColumn title="Help" links={helpLinks} />
-
-        <section className="footer-member">
-          <h2>Become a member</h2>
-          <p>Join now and get 10% off your next purchase.</p>
-          <a href="#top" className="footer-member-link">
-            Read more <span aria-hidden="true">-&gt;</span>
-          </a>
-        </section>
+        <LinkColumn title="Quick Links" links={quickLinks} onNavigate={onNavigate} onExternalNavigate={onExternalNavigate} />
+        <LinkColumn title="Info" links={infoLinks} onNavigate={onNavigate} onExternalNavigate={onExternalNavigate} />
+        <LinkColumn title="Legal" links={legalLinks} onNavigate={onNavigate} onExternalNavigate={onExternalNavigate} />
+        <LinkColumn title="Social" links={socialLinks} onNavigate={onNavigate} onExternalNavigate={onExternalNavigate} />
       </div>
 
-      <div className="footer-mobile">
-        <div className="footer-mobile__grid">
-          <MobileLinkGroup
-            title="About Us"
-            links={['About Us', 'Careers', 'Sustainability', 'Press']}
-            onAboutOpen={onAboutOpen}
-          />
-          <MobileLinkGroup
-            title="Support"
-            className="footer-mobile__col--wide footer-mobile__col--solo"
-            links={[
-              'Make a return/Exchange',
-              'Refund/Exchange policy',
-              'Track your order',
-              'Shipping policy',
-              "FAQ's",
-              'Terms',
-            ]}
-          />
+      <div className="footer-brand-band" aria-hidden="true">
+        <div className="footer-brand-band__track">
+          <div className="footer-brand-band__group">
+            {brandLoop.map((word, index) => (
+              <span key={`brand-a-${index}`}>{word}</span>
+            ))}
+          </div>
+          <div className="footer-brand-band__group" aria-hidden="true">
+            {brandLoop.map((word, index) => (
+              <span key={`brand-b-${index}`}>{word}</span>
+            ))}
+          </div>
         </div>
-
-        <p className="footer-mobile__copy">
-          &copy; {new Date().getFullYear()} Backlog Retail Private Limited, All rights reserved
-        </p>
       </div>
 
-      <p className="footer-note">
-        Backlog is built for everyday wear, thoughtful details, and a cleaner way to shop the collection.
-      </p>
+      <div className="footer-copyright">
+        <p>&copy; {new Date().getFullYear()} BACKLOG</p>
+      </div>
     </footer>
   )
 }

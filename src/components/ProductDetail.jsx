@@ -20,15 +20,114 @@ function VariantPill({
   )
 }
 
+const SIZE_ORDER = [
+  'XXS',
+  'XS',
+  'S',
+  'M',
+  'L',
+  'XL',
+  'XXL',
+  'XXXL',
+]
+
+function getSizeOrderRank(label) {
+  const normalized = String(label || '').trim().toUpperCase()
+  const exactIndex = SIZE_ORDER.indexOf(normalized)
+
+  if (exactIndex !== -1) {
+    return exactIndex
+  }
+
+  const numericMatch = normalized.match(/^(\d+)(?:\s*(?:IN|CM))?$/)
+  if (numericMatch) {
+    return 100 + Number.parseInt(numericMatch[1], 10)
+  }
+
+  return 1000 + normalized.charCodeAt(0)
+}
+
+function SwatchRow({ colors = [] }) {
+  return (
+    <div className="product-grid-swatches" aria-label="Product colors">
+      {(colors.length > 0 ? [colors[0]] : []).map((color) => (
+        <span
+          key={color}
+          className="product-grid-swatch"
+          style={{ backgroundColor: color }}
+          aria-hidden="true"
+        />
+      ))}
+    </div>
+  )
+}
+
+function RelatedCard({ product, onSelect, onPrefetch }) {
+  const imageSrc =
+    product.imageUrls?.[0] || product.gallery?.[0]?.src || product.image || ''
+  const hoverImageSrc = product.imageUrls?.[1] || product.gallery?.[1]?.src || ''
+  const imageAlt = product.gallery?.[0]?.alt || product.title || ''
+  const locked = Number(product.totalInventory ?? 0) <= 0
+
+  return (
+    <button
+      type="button"
+      className={`product-detail-related-card product-showcase-card${locked ? ' product-showcase-card--locked' : ''}`}
+      onClick={locked ? undefined : () => onSelect?.(product)}
+      onMouseEnter={locked ? undefined : () => onPrefetch?.(product)}
+      onFocus={locked ? undefined : () => onPrefetch?.(product)}
+      onTouchStart={locked ? undefined : () => onPrefetch?.(product)}
+      disabled={locked}
+      aria-label={locked ? `${product.title} coming soon` : `Open ${product.title}`}
+      aria-disabled={locked}
+    >
+      <div className="product-image-stage product-image-stage--grid">
+        {imageSrc ? <img className="product-showcase-image" src={imageSrc} alt={imageAlt} /> : null}
+        {hoverImageSrc && hoverImageSrc !== imageSrc ? (
+          <img className="product-showcase-image product-showcase-image--hover" src={hoverImageSrc} alt="" aria-hidden="true" />
+        ) : null}
+      </div>
+
+      <div className="product-grid-meta">
+        <div className="product-grid-title-row">
+          <div className="product-grid-title-copy">
+            <h2>{product.title}</h2>
+          </div>
+          <p className={`product-grid-price${locked ? ' product-grid-price--locked' : ''}`}>
+            {locked ? 'Coming Soon' : product.price}
+          </p>
+        </div>
+        <div className="product-grid-footer">
+          <SwatchRow colors={product.colors} />
+        </div>
+      </div>
+    </button>
+  )
+}
+
 export function ProductDetail({
   product,
+  relatedProducts = [],
   onBack,
+  onSelectRelated,
+  onPrefetchRelated,
   onAddToCart,
   onBuyNow,
   addingToCart,
   buyingNow,
 }) {
-  const firstAvailableSize = product.sizes.find((size) => size.available)?.label ?? ''
+  const sortedSizes = [...product.sizes].sort((a, b) => {
+    const rankA = getSizeOrderRank(a.label)
+    const rankB = getSizeOrderRank(b.label)
+
+    if (rankA !== rankB) {
+      return rankA - rankB
+    }
+
+    return String(a.label).localeCompare(String(b.label))
+  })
+
+  const firstAvailableSize = sortedSizes.find((size) => size.available)?.label ?? ''
   const [selectedSize, setSelectedSize] = useState(firstAvailableSize)
   const [activeInfo, setActiveInfo] = useState('details')
   const [mobileAccordionOpen, setMobileAccordionOpen] = useState('')
@@ -36,7 +135,7 @@ export function ProductDetail({
   const swipeStartX = useRef(0)
   const swipeStartY = useRef(0)
   const selectedSizeEntry =
-    product.sizes.find((size) => size.label === selectedSize) ?? null
+    sortedSizes.find((size) => size.label === selectedSize) ?? null
   const imageUrls =
     product.imageUrls?.length > 0
       ? product.imageUrls
@@ -206,7 +305,7 @@ export function ProductDetail({
                 <span className="detail-variant-meta">{selectedSize || 'select a size'}</span>
               </div>
               <div className="detail-pill-row" aria-label="Size options">
-                {product.sizes.map((size) => (
+                {sortedSizes.map((size) => (
                   <VariantPill
                     key={size.label}
                     label={size.label}
@@ -287,6 +386,24 @@ export function ProductDetail({
           </div>
         </aside>
       </div>
+
+      {relatedProducts.length > 0 ? (
+        <div className="product-detail-related" aria-label="You may also like">
+          <div className="product-detail-related__header">
+            <p className="product-detail-related__kicker">You may also like</p>
+          </div>
+          <div className="product-detail-related__grid">
+            {relatedProducts.slice(0, 4).map((relatedProduct, index) => (
+              <RelatedCard
+                key={relatedProduct.handle || relatedProduct.id || index}
+                product={relatedProduct}
+                onSelect={onSelectRelated}
+                onPrefetch={onPrefetchRelated}
+              />
+            ))}
+          </div>
+        </div>
+      ) : null}
     </section>
   )
 }

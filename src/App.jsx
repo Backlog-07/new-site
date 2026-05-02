@@ -4,29 +4,49 @@ import { Header } from './components/Header.jsx'
 import { Footer } from './components/Footer.jsx'
 import { ProductShowcase } from './components/ProductShowcase.jsx'
 import { ServiceStrip } from './components/ServiceStrip.jsx'
-import { SubscribeSection } from './components/SubscribeSection.jsx'
+import { AfterSplitStrip } from './components/AfterSplitStrip.jsx'
+import { FaqSection } from './components/FaqSection.jsx'
+import { UgcVideoCarousel } from './components/UgcVideoCarousel.jsx'
+import { CategorySplitSection } from './components/CategorySplitSection.jsx'
 import { ProductDetail } from './components/ProductDetail.jsx'
+import { ProductsPage } from './components/ProductsPage.jsx'
 import { PlaceholderVideoSection } from './components/PlaceholderVideoSection.jsx'
 import { WorldPage } from './components/WorldPage.jsx'
 import { AboutPage } from './components/AboutPage.jsx'
+import { InfoPage } from './components/InfoPage.jsx'
 import { useShowcaseProducts } from './hooks/useShowcaseProducts.js'
 import { useShopifyCart } from './hooks/useShopifyCart.js'
 import { useShopifyProduct } from './hooks/useShopifyProduct.js'
 import { useLandingVideo } from './hooks/useLandingVideo.js'
 import { CartDrawer } from './components/CartDrawer.jsx'
 import { useWorldGallery } from './hooks/useWorldGallery.js'
+import { useUgcVideos } from './hooks/useUgcVideos.js'
 import { useCinematicMotion } from './hooks/useCinematicMotion.js'
 import { useHomeScrollMotion } from './hooks/useHomeScrollMotion.js'
 import { scrollToTopImmediate, useLenisSmoothScroll } from './hooks/useLenisSmoothScroll.js'
 import { getCachedProductByHandle, prefetchProductByHandle } from './data/showcaseProducts.js'
 
 function getPageFromPathname(pathname) {
+  if (pathname === '/products') {
+    return 'products'
+  }
+
   if (pathname === '/world') {
     return 'world'
   }
 
   if (pathname === '/about') {
     return 'about'
+  }
+
+  if (
+    pathname === '/contact' ||
+    pathname === '/privacy-policy' ||
+    pathname === '/terms-of-service' ||
+    pathname === '/shipping-policy' ||
+    pathname === '/refund-policy'
+  ) {
+    return pathname.slice(1)
   }
 
   if (pathname.startsWith('/products/') || pathname.startsWith('/product/')) {
@@ -50,7 +70,10 @@ function getProductHandleFromPathname(pathname) {
 
 function App() {
   const currentPathname = window.location.pathname
-  const skipIntro = currentPathname.startsWith('/products/') || currentPathname.startsWith('/product/')
+  const skipIntro =
+    currentPathname === '/products' ||
+    currentPathname.startsWith('/products/') ||
+    currentPathname.startsWith('/product/')
   const [route, setRoute] = useState(() => ({
     page: getPageFromPathname(currentPathname),
     productHandle: getProductHandleFromPathname(currentPathname),
@@ -78,12 +101,18 @@ function App() {
     enter: null,
   })
   const { products, loading, error } = useShowcaseProducts()
+  const landingProducts = products.slice(0, 4)
   const {
     slides: worldSlides,
     loading: worldLoading,
     error: worldError,
     contentType: worldContentType,
   } = useWorldGallery()
+  const {
+    videos: ugcVideos,
+    loading: ugcVideosLoading,
+    error: ugcVideosError,
+  } = useUgcVideos()
   const {
     product: selectedProduct,
     loading: productLoading,
@@ -94,6 +123,10 @@ function App() {
     displayRoute.page === 'product'
       ? getCachedProductByHandle(displayRoute.productHandle)
       : null
+  const activeProduct = selectedProduct || cachedProductPreview
+  const relatedProducts = activeProduct
+    ? products.filter((product) => product.handle !== activeProduct.handle).slice(0, 4)
+    : []
   const { video: landingVideo } = useLandingVideo()
   const {
     cart,
@@ -110,6 +143,8 @@ function App() {
   const pageTransitionKey =
     displayRoute.page === 'home'
       ? 'home'
+      : displayRoute.page === 'products'
+        ? 'products'
       : displayRoute.page === 'product'
         ? `product-${displayRoute.productHandle || 'loading'}`
         : displayRoute.page
@@ -351,11 +386,38 @@ function App() {
     window.history.pushState({}, '', '/')
   }
 
+  function handleProductsOpen() {
+    const nextRoute = { page: 'products', productHandle: '' }
+    setRoute(nextRoute)
+    setDisplayRoute(nextRoute)
+    window.history.pushState({}, '', '/products')
+  }
+
   function handleAboutOpen() {
     const nextRoute = { page: 'about', productHandle: '' }
     setRoute(nextRoute)
     setDisplayRoute(nextRoute)
     window.history.pushState({}, '', '/about')
+  }
+
+  function handleInfoOpen(path) {
+    const normalizedPath = String(path || '').trim()
+    if (!normalizedPath) {
+      return
+    }
+
+    const nextRoute = { page: normalizedPath.replace(/^\//, ''), productHandle: '' }
+    setRoute(nextRoute)
+    setDisplayRoute(nextRoute)
+    window.history.pushState({}, '', normalizedPath)
+  }
+
+  function handleExternalOpen(url) {
+    if (!url) {
+      return
+    }
+
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   function handleProductOpen(product) {
@@ -415,6 +477,22 @@ function App() {
   }
 
   useEffect(() => {
+    if (displayRoute.page === 'products') {
+      document.title = 'Products | Backlog'
+
+      const description = 'Browse Backlog products in one dedicated collection page.'
+
+      let metaDescription = document.querySelector('meta[name="description"]')
+      if (!metaDescription) {
+        metaDescription = document.createElement('meta')
+        metaDescription.setAttribute('name', 'description')
+        document.head.appendChild(metaDescription)
+      }
+      metaDescription.setAttribute('content', description)
+
+      return undefined
+    }
+
     if (displayRoute.page !== 'product') {
       document.title = 'Backlog'
       return undefined
@@ -479,6 +557,7 @@ function App() {
         cartCount={cartCount}
         onCartOpen={openCart}
         onHomeOpen={handleHomeOpen}
+        onShopOpen={handleProductsOpen}
         onWorldOpen={handleWorldOpen}
         onAboutOpen={handleAboutOpen}
       />
@@ -509,36 +588,65 @@ function App() {
                 data-motion-weight
               >
                 <ProductShowcase
-                  products={products}
+                  products={landingProducts}
                   loading={loading}
                   error={error}
                   onSelect={handleProductOpen}
                   onPrefetch={handleProductPrefetch}
+                  onBrowseAll={handleProductsOpen}
                 />
               </div>
               <div
                 className="stack-section stack-section--services"
-                style={{ '--stack-layer': 4, '--motion-delay': '160ms' }}
+                style={{ '--stack-layer': 3, '--motion-delay': '160ms' }}
                 data-motion-reveal
                 data-motion-weight
               >
                 <ServiceStrip />
               </div>
               <div
-                className="stack-section stack-section--subscribe"
-                style={{ '--stack-layer': 5, '--motion-delay': '230ms' }}
+                className="stack-section stack-section--category-split"
+                style={{ '--stack-layer': 4, '--motion-delay': '230ms' }}
                 data-motion-reveal
                 data-motion-weight
               >
-                <SubscribeSection />
+                <CategorySplitSection onShopOpen={handleProductsOpen} />
+              </div>
+              <div
+                className="stack-section stack-section--after-split"
+                style={{ '--stack-layer': 5, '--motion-delay': '300ms' }}
+                data-motion-reveal
+                data-motion-weight
+              >
+                <AfterSplitStrip />
+              </div>
+              <div
+                className="stack-section stack-section--ugc-video"
+                style={{ '--stack-layer': 6, '--motion-delay': '370ms' }}
+                data-motion-reveal
+                data-motion-weight
+              >
+                <UgcVideoCarousel
+                  videos={ugcVideos}
+                  loading={ugcVideosLoading}
+                  error={ugcVideosError}
+                />
+              </div>
+              <div
+                className="stack-section stack-section--faq"
+                style={{ '--stack-layer': 7, '--motion-delay': '440ms' }}
+                data-motion-reveal
+                data-motion-weight
+              >
+                <FaqSection />
               </div>
               <div
                 className="stack-section stack-section--footer"
-                style={{ '--stack-layer': 6, '--motion-delay': '300ms' }}
+                style={{ '--stack-layer': 8, '--motion-delay': '510ms' }}
                 data-motion-reveal
                 data-motion-weight
               >
-                <Footer onAboutOpen={handleAboutOpen} />
+                <Footer onNavigate={handleInfoOpen} onExternalNavigate={handleExternalOpen} />
               </div>
             </div>
           ) : displayRoute.page === 'world' ? (
@@ -550,11 +658,47 @@ function App() {
             />
           ) : displayRoute.page === 'about' ? (
             <AboutPage />
+          ) : displayRoute.page === 'contact' ? (
+            <InfoPage
+              titleLines={['CONTACT US', 'SUPPORT HOURS', 'MONDAY TO SATURDAY', '12 PM - 6 PM']}
+              footerText="Orders, press, and support: hello@backlogstore.com"
+            />
+          ) : displayRoute.page === 'privacy-policy' ? (
+            <InfoPage
+              titleLines={['PRIVACY POLICY', 'DATA WE COLLECT', 'HOW WE USE IT', 'STORE OPERATIONS']}
+              footerText="We’re connecting the policy page now and can add full copy next."
+            />
+          ) : displayRoute.page === 'terms-of-service' ? (
+            <InfoPage
+              titleLines={['TERMS OF SERVICE', 'PLEASE REVIEW', 'PURCHASE TERMS', 'STORE USE GUIDELINES']}
+              footerText="This page is wired up and ready for the full terms."
+            />
+          ) : displayRoute.page === 'shipping-policy' ? (
+            <InfoPage
+              titleLines={['SHIPPING POLICY', 'DELIVERY WINDOWS', 'ORDER PROCESSING', 'TRANSIT INFO']}
+              footerText="We’ll add the shipping details here."
+            />
+          ) : displayRoute.page === 'refund-policy' ? (
+            <InfoPage
+              titleLines={['REFUND POLICY', 'RETURNS AND EXCHANGES', 'ELIGIBILITY DETAILS', 'TIMELINES']}
+              footerText="This section is connected for the refund copy."
+            />
+          ) : displayRoute.page === 'products' ? (
+            <ProductsPage
+              products={products}
+              loading={loading}
+              error={error}
+              onSelect={handleProductOpen}
+              onPrefetch={handleProductPrefetch}
+            />
           ) : displayRoute.page === 'product' ? (
-            selectedProduct || cachedProductPreview ? (
+            activeProduct ? (
               <ProductDetail
-                key={(selectedProduct || cachedProductPreview).handle || (selectedProduct || cachedProductPreview).id}
-                product={selectedProduct || cachedProductPreview}
+                key={activeProduct.handle || activeProduct.id}
+                product={activeProduct}
+                relatedProducts={relatedProducts}
+                onSelectRelated={handleProductOpen}
+                onPrefetchRelated={handleProductPrefetch}
                 onAddToCart={handleAddToCart}
                 onBuyNow={handleBuyNow}
                 addingToCart={isAddingToCart}
@@ -612,7 +756,11 @@ function App() {
         </div>
       </main>
       {!isHomeStack ? (
-        <Footer onAboutOpen={handleAboutOpen} staticReveal={displayRoute.page === 'product'} />
+        <Footer
+          forceVisible={displayRoute.page === 'product'}
+          onNavigate={handleInfoOpen}
+          onExternalNavigate={handleExternalOpen}
+        />
       ) : null}
       <CartDrawer
         cart={cart}
