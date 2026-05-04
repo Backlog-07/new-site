@@ -8,13 +8,6 @@ const infoLinks = [
   { label: 'Contact Us', href: '/about' },
 ]
 
-const legalLinks = [
-  { label: 'Privacy Policy', href: '/privacy-policy' },
-  { label: 'Terms of Service', href: '/terms-of-service' },
-  { label: 'Shipping Policy', href: '/shipping-policy' },
-  { label: 'Refund Policy', href: '/refund-policy' },
-]
-
 const socialLinks = [{ label: 'Instagram', href: 'https://www.instagram.com/backlog.in/', external: true }]
 const brandLoop = Array.from({ length: 8 }, () => 'BACKLOG')
 
@@ -59,7 +52,6 @@ export function Footer({ forceVisible = false, onNavigate, onExternalNavigate } 
       <div className="footer-panel">
         <LinkColumn title="Quick Links" links={quickLinks} onNavigate={onNavigate} onExternalNavigate={onExternalNavigate} />
         <LinkColumn title="Info" links={infoLinks} onNavigate={onNavigate} onExternalNavigate={onExternalNavigate} />
-        <LinkColumn title="Legal" links={legalLinks} onNavigate={onNavigate} onExternalNavigate={onExternalNavigate} />
         <LinkColumn title="Social" links={socialLinks} onNavigate={onNavigate} onExternalNavigate={onExternalNavigate} />
       </div>
 

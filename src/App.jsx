@@ -39,13 +39,7 @@ function getPageFromPathname(pathname) {
     return 'about'
   }
 
-  if (
-    pathname === '/contact' ||
-    pathname === '/privacy-policy' ||
-    pathname === '/terms-of-service' ||
-    pathname === '/shipping-policy' ||
-    pathname === '/refund-policy'
-  ) {
+  if (pathname === '/contact') {
     return pathname.slice(1)
   }
 
@@ -661,7 +655,7 @@ function App() {
           ) : displayRoute.page === 'contact' ? (
             <InfoPage
               titleLines={['CONTACT US', 'SUPPORT HOURS', 'MONDAY TO SATURDAY', '12 PM - 6 PM']}
-              footerText="Orders, press, and support: hello@backlogstore.com"
+              footerText="Orders, press, and support: customercare@backlogstore.in"
             />
           ) : displayRoute.page === 'privacy-policy' ? (
             <InfoPage

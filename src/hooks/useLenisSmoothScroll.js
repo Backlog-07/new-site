@@ -36,15 +36,20 @@ export function useLenisSmoothScroll({ enabled = true } = {}) {
     }
 
     const lenis = new Lenis({
-      duration: 1.05,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.2,
+      easing: (t) => {
+        if (t === 0 || t === 1) {
+          return t
+        }
+
+        return 1 - Math.pow(2, -10 * t)
+      },
       smoothWheel: true,
-      syncTouch: true,
-      syncTouchLerp: 0.08,
+      smoothTouch: false,
       touchInertiaExponent: 1.65,
       wheelMultiplier: 1,
-      touchMultiplier: 1.05,
-      autoRaf: true,
+      touchMultiplier: 1,
+      autoRaf: false,
       autoResize: true,
       autoToggle: true,
       anchors: true,
@@ -70,9 +75,18 @@ export function useLenisSmoothScroll({ enabled = true } = {}) {
 
     lenis.on('scroll', onScroll)
 
+    let rafId = 0
+
+    const raf = (time) => {
+      lenis.raf(time)
+      rafId = window.requestAnimationFrame(raf)
+    }
+
+    rafId = window.requestAnimationFrame(raf)
     ScrollTrigger.refresh()
 
     return () => {
+      window.cancelAnimationFrame(rafId)
       lenis.off('scroll', onScroll)
       lenis.destroy()
       lenisInstance = null

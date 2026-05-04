@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap');
 
 :root {
-  --surface: #ececef;
-  --surface-alt: #dedfe3;
-  --border: rgba(18, 18, 18, 0.12);
-  --border-strong: rgba(18, 18, 18, 0.34);
+  --surface: #ffffff;
+  --surface-alt: #f4f4f4;
+  --border: rgba(17, 17, 17, 0.12);
+  --border-strong: rgba(17, 17, 17, 0.32);
   --text-strong: #111111;
-  --text-muted: rgba(17, 17, 17, 0.66);
-  --accent-strong: #6c7480;
-  --accent-bright: #c7cdd4;
+  --text-muted: rgba(17, 17, 17, 0.68);
+  --accent-strong: #111111;
+  --accent-bright: #e8e8e8;
   --ink: #111111;
-  --ui: 'Space Grotesk', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
-  --intro: 'Inter Tight', 'Space Grotesk', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
-  --display: 'Archivo Black', Impact, Haettenschweiler, 'Arial Black', sans-serif;
+  --ui: 'Inter Tight', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+  --intro: 'Inter Tight', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+  --display: 'Inter Tight', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
   --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   --motion-ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-ease-slow-settle: cubic-bezier(0.25, 1, 0.5, 1);
@@ -26,7 +26,7 @@
   line-height: 1.5;
   font-weight: 400;
   color: var(--text-muted);
-  background: linear-gradient(180deg, #ececef 0%, #e1e3e7 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #f4f4f4 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -39,6 +39,7 @@
 
 html {
   scroll-behavior: auto;
+  scroll-padding-top: var(--site-header-height, 60px);
 }
 
 html.lenis,
@@ -62,9 +63,9 @@ body {
   min-height: 100vh;
   overscroll-behavior-y: none;
   background:
-    radial-gradient(circle at 8% 8%, rgba(108, 116, 128, 0.08), transparent 18%),
-    radial-gradient(circle at 92% 16%, rgba(17, 17, 17, 0.05), transparent 20%),
-    linear-gradient(180deg, #ececef 0%, #e1e3e7 100%);
+    radial-gradient(circle at 8% 8%, rgba(17, 17, 17, 0.05), transparent 18%),
+    radial-gradient(circle at 92% 16%, rgba(17, 17, 17, 0.04), transparent 20%),
+    linear-gradient(180deg, #ffffff 0%, #f4f4f4 100%);
   color: var(--text-strong);
 }
 

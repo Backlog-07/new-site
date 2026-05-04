@@ -7,9 +7,9 @@ export function AboutPage() {
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.82">SUPPORT HOURS</p>
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.8">MONDAY TO SATURDAY</p>
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.78">12 PM - 6 PM</p>
-          <p className="about-page__line" data-motion-reveal data-motion-parallax="0.76">+91 836-995-0066</p>
+          <p className="about-page__line" data-motion-reveal data-motion-parallax="0.76">+91 8360863502</p>
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.74">ORDERS / PRESS / SUPPORT</p>
-          <p className="about-page__line" data-motion-reveal data-motion-parallax="0.72">hello@backlogstore.com</p>
+          <p className="about-page__line" data-motion-reveal data-motion-parallax="0.72">customercare@backlogstore.in</p>
           <p className="about-page__line" data-motion-reveal data-motion-parallax="0.7">BACKLOG</p>
         </div>
 
@@ -22,12 +22,12 @@ export function AboutPage() {
               Backlog is built for everyday wear, thoughtful details, and a cleaner way to shop the collection.
             </p>
             <p data-motion-reveal>
-              For product information or order questions, email <strong>hello@backlogstore.com</strong> or message us at{' '}
-              <strong>+91 836-995-0066</strong>.
+              For product information or order questions, email <strong>customercare@backlogstore.in</strong> or message us at{' '}
+              <strong>+91 8360863502</strong>.
             </p>
             <p data-motion-reveal>
               For business, press, or partnership queries, reach out to{' '}
-              <strong>hello@backlogstore.com</strong>.
+              <strong>customercare@backlogstore.in</strong>.
             </p>
           </div>
         </div>
