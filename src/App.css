@@ -8888,3 +8888,11 @@ body {
 .footer-column a {
   color: #111111 !important;
 }
+
+.placeholder-video-aw {
+  color: #ffffff !important;
+  background: rgba(17, 17, 17, 0.9) !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+  text-shadow: none !important;
+}

@@ -407,7 +407,7 @@ function mapShopifyProduct(product, index) {
   }
 }
 
-export async function fetchShowcaseProducts(limit = 4) {
+export async function fetchShowcaseProducts(limit = 250) {
   const data = await storefrontQuery(PRODUCTS_QUERY, { first: limit })
   const nodes = data?.products?.nodes ?? []
 

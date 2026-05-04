@@ -96,6 +96,7 @@ function App() {
   })
   const { products, loading, error } = useShowcaseProducts()
   const landingProducts = products.slice(0, 4)
+  const shopProducts = products
   const {
     slides: worldSlides,
     loading: worldLoading,
@@ -679,7 +680,7 @@ function App() {
             />
           ) : displayRoute.page === 'products' ? (
             <ProductsPage
-              products={products}
+              products={shopProducts}
               loading={loading}
               error={error}
               onSelect={handleProductOpen}

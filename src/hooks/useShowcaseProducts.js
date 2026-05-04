@@ -16,7 +16,7 @@ export function useShowcaseProducts() {
       }
     }
 
-    fetchShowcaseProducts()
+    fetchShowcaseProducts(250)
       .then((nextProducts) => {
         if (active) {
           setProducts(nextProducts)
